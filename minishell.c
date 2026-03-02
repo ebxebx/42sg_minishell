@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 12:30:09 by zchoo             #+#    #+#             */
-/*   Updated: 2026/03/02 12:51:01 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/03/02 15:37:47 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ int	main(int argc, char **argv, char **env)
 		cmd = readline("minishell> ");
 		if (!cmd)
 			break ;
+		add_history(cmd);
 		exec_command(&shell, cmd);
 		free(cmd);
 	}
