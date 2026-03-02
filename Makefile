@@ -10,7 +10,7 @@ SRCS = 	minishell.c minishell_utils.c \
 OBJS = $(SRCS:.c=.o)
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -I$(LIBFT_DIR) -g -o2
+CFLAGS = -Wall -Wextra -Werror -I$(LIBFT_DIR) -g -lreadline
 LIBFT_FLAGS = -L$(LIBFT_DIR) -lft
 
 # Add dependency flags and derived files
