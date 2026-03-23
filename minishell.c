@@ -20,7 +20,6 @@ int	main(int argc, char **argv, char **env)
 	(void)argc;
 	(void)argv;
 	init_shell(&shell, env);
-	// Main loop
 	while (1)
 	{
 		cmd = readline("minishell> ");

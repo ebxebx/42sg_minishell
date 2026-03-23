@@ -11,7 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell_debug.h"
-#include "stdarg.h"
+#include <stdarg.h>
 
 void	debug_printf(const char *format_str, ...)
 {
