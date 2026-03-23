@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zchoo <zchoo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ka-tan <ka-tan@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 12:35:04 by zchoo             #+#    #+#             */
-/*   Updated: 2026/03/02 13:16:20 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/03/23 19:11:45 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,5 +32,10 @@ typedef struct s_shell
 void		init_shell(t_shell *shell, char **env);
 void		exec_command(t_shell *shell, char *cmd);
 void		free_shell(t_shell *shell);
+
+int		is_builtin(char *builtin_cmd);
+int		exec_builtin(t_shell *shell, char **argv);
+char	**dup_env(char **envp);
+void	free_env(char **envp);
 
 #endif
