@@ -30,7 +30,6 @@ typedef enum e_token_type
 	TOKEN_PARANTHESIS_CLOSE,
 	TOKEN_AND,
 	TOKEN_OR,
-	// Add other token types
 }					t_token_type;
 
 typedef struct s_token
@@ -41,8 +40,10 @@ typedef struct s_token
 }					t_token;
 
 t_token				*create_token(const char *value, size_t len, t_token_type type);
+t_token				*parse_token(const char *input);
 void				free_token(t_token *token);
 void				free_token_list(t_token *head);
 void				print_token_list(t_token *head);
+size_t				token_len(const char *input, size_t start);
 
 #endif
