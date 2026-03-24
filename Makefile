@@ -5,8 +5,8 @@ TEST_CMD  = ./$(NAME) "debug"
 LIBFT_DIR = ./libft
 LIBFT     = $(LIBFT_DIR)/libft.a
 
-SRCS = 	minishell.c minishell_utils.c \
-		minishell_debug.c
+SRCS =	minishell.c minishell_utils.c \
+		minishell_debug.c builtin/builtin_env.c
 OBJS = $(SRCS:.c=.o)
 
 CC = cc

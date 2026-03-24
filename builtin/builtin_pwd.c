@@ -6,35 +6,36 @@
 /*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:40 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/03/23 19:45:26 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/03/24 20:01:54 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
-#include <linux/limits.h>
-#include "ft_printf/include/ft_printf.h"
+#include "../minishell.h"
+
 
 int	builtin_pwd(t_shell *shell)
 {
-	char	cwd[PATH_MAX];
+	char	cwd;
 
 	(void)shell;
-	if (getcwd(cwd, sizeof(cwd)) != NULL)
-		ft_printf("%s\n", cwd);
+	cwd = getcwd(NULL, 0);
+	if (cwd != NULL)
+		ft_putendl_fd(cwd, 1);
 	else
 	{
 		perror("pwd");
 		return (1);
 	}
+	free(cwd);
 	return (0);
 }
 
-int	main(void)
-{
-	t_shell	shell;
-	int		status;
+// int	main(void)
+// {
+// 	t_shell	shell;
+// 	int		status;
 
-	status = builtin_pwd(&shell);
-	printf("return value = %d\n", status);
-	return (0);
-}
+// 	status = builtin_pwd(&shell);
+// 	ft_printf("return value = %d\n", status);
+// 	return (0);
+// }

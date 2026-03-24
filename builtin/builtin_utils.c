@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ka-tan <ka-tan@student.42.fr>              +#+  +:+       +#+        */
+/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:26 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/03/23 18:41:11 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/03/24 20:22:07 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	exec_builtin(t_shell *shell, char **argv)
 	else if (!ft_strcmp(argv[0], "echo"))
 		return (builtin_echo(argv));
 	else if (!ft_strcmp(argv[0], "env"))
-		return (builtin_env());
+		return (builtin_env(shell, argv));
 	else if (!ft_strcmp(argv[0], "pwd"))
 		return (builtin_pwd());
 	else if (!ft_strcmp(argv[0], "cd"))
