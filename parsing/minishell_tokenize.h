@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_tokenize.h                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zchoo <zchoo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 16:09:09 by zchoo             #+#    #+#             */
-/*   Updated: 2026/03/23 19:45:30 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/03/27 19:58:05 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,5 +44,6 @@ t_token				*create_token(const char *value, size_t len, t_token_type type);
 void				free_token(t_token *token);
 void				free_token_list(t_token *head);
 void				print_token_list(t_token *head);
+t_token				*parse_token(const char *input);
 
 #endif
