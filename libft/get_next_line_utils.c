@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zchoo <zchoo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/12/05 16:36:21 by zchoo             #+#    #+#             */
-/*   Updated: 2026/01/05 17:53:08 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/03/28 20:47:28 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,25 +53,25 @@ size_t	get_total_bytes(t_list *head)
 	return (total_bytes);
 }
 
-char	*ft_strndup(char *str, size_t n)
-{
-	char	*copy;
-	size_t	i;
+// char	*ft_strndup(char *str, size_t n)
+// {
+// 	char	*copy;
+// 	size_t	i;
 
-	if (!str)
-		return (NULL);
-	copy = (char *)malloc(sizeof(char) * (n + 1));
-	if (!copy)
-		return (NULL);
-	i = 0;
-	while (i < n && str[i])
-	{
-		copy[i] = str[i];
-		i++;
-	}
-	copy[i] = '\0';
-	return (copy);
-}
+// 	if (!str)
+// 		return (NULL);
+// 	copy = (char *)malloc(sizeof(char) * (n + 1));
+// 	if (!copy)
+// 		return (NULL);
+// 	i = 0;
+// 	while (i < n && str[i])
+// 	{
+// 		copy[i] = str[i];
+// 		i++;
+// 	}
+// 	copy[i] = '\0';
+// 	return (copy);
+// }
 
 void	*full_clean(char **leftover, t_list **lst, char **buf)
 {

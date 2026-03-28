@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zchoo <zchoo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/22 19:31:24 by zchoo             #+#    #+#             */
-/*   Updated: 2025/11/27 18:02:44 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/03/28 20:42:19 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,25 +30,25 @@ static int	ft_count_words(char *str, char c)
 	return (count);
 }
 
-static char	*ft_strndup(char *str, int n)
-{
-	char	*copy;
-	int		i;
+// static char	*ft_strndup(char *str, int n)
+// {
+// 	char	*copy;
+// 	int		i;
 
-	if (!(*str))
-		return (NULL);
-	copy = malloc(sizeof(char) * (n + 1));
-	if (!copy)
-		return (NULL);
-	i = 0;
-	while (str[i] && i < n)
-	{
-		copy[i] = str[i];
-		i++;
-	}
-	copy[i] = '\0';
-	return (copy);
-}
+// 	if (!(*str))
+// 		return (NULL);
+// 	copy = malloc(sizeof(char) * (n + 1));
+// 	if (!copy)
+// 		return (NULL);
+// 	i = 0;
+// 	while (str[i] && i < n)
+// 	{
+// 		copy[i] = str[i];
+// 		i++;
+// 	}
+// 	copy[i] = '\0';
+// 	return (copy);
+// }
 
 static void	free_array(char **arr, size_t n)
 {

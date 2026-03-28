@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zchoo <zchoo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 15:52:36 by zchoo             #+#    #+#             */
-/*   Updated: 2026/03/23 20:02:20 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/03/28 20:09:22 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ t_token	*create_token(const char *value, size_t len, t_token_type type)
 	new_token = malloc(sizeof(t_token));
 	if (!new_token)
 		return (NULL);
-	new_token->value = strndup(value, len);
+	new_token->value = ft_strndup(value, len);
 	if (!new_token->value)
 	{
 		free(new_token);
@@ -91,22 +91,22 @@ t_token	*parse_token(const char *input)
 			token = create_token(input + i, 1, TOKEN_PARANTHESIS_CLOSE);
 			i++;
 		}
-		else if (strncmp(input + i, "||", 2) == 0)
+		else if (ft_strncmp(input + i, "||", 2) == 0)
 		{
 			token = create_token(input + i, 2, TOKEN_OR);
 			i += 2;
 		}
-		else if (strncmp(input + i, "&&", 2) == 0)
+		else if (ft_strncmp(input + i, "&&", 2) == 0)
 		{
 			token = create_token(input + i, 2, TOKEN_AND);
 			i += 2;
 		}
-		else if (strncmp(input + i, "<<", 2) == 0)
+		else if (ft_strncmp(input + i, "<<", 2) == 0)
 		{
 			token = create_token(input + i, 2, TOKEN_REDIRECT_HEREDOC);
 			i += 2;
 		}
-		else if (strncmp(input + i, ">>", 2) == 0)
+		else if (ft_strncmp(input + i, ">>", 2) == 0)
 		{
 			token = create_token(input + i, 2, TOKEN_REDIRECT_APPEND);
 			i += 2;
@@ -158,7 +158,7 @@ void print_token_list(t_token *tokens)
 	t_token *current = tokens;
 	while (current)
 	{
-		printf("Token: %s, Type: %d\n", current->value, current->type);
+		ft_printf("Token: %s, Type: %d\n", current->value, current->type);
 		current = current->next;
 	}
 }

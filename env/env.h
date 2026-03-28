@@ -6,7 +6,7 @@
 /*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 12:35:04 by zchoo             #+#    #+#             */
-/*   Updated: 2026/03/24 21:05:48 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/03/28 20:49:02 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,7 +23,6 @@
 # include <readline/history.h>
 # include "libft/libft.h"
 # include <linux/limits.h>
-# include "ft_printf/include/ft_printf.h"
 # include "../minishell.h"
 
 int		is_builtin(char *builtin_cmd);

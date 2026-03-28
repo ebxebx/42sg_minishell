@@ -12,7 +12,7 @@ typedef struct s_ast {
 
 t_ast *create_node(char *value) {
     t_ast *new_node = (t_ast *)malloc(sizeof(t_ast));
-    new_node->value = strdup(value);
+    new_node->value = ft_strdup(value);
     new_node->left = NULL;
     new_node->right = NULL;
     return new_node;
