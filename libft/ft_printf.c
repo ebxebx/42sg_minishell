@@ -82,7 +82,7 @@ int	handle_flag(va_list *ap, const char flag)
 		cnt += handle_text(ap, flag);
 	else if (flag == 'p')
 		cnt += handle_pointer(ap, flag);
-	else if (ft_strchr("dfiuxX", flag))
+	else if (ft_strchr("dfiuxXf", flag))
 		cnt += handle_number(ap, flag);
 	else if (flag == '%')
 	{

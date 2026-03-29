@@ -17,28 +17,29 @@ SRCS = ft_isalpha.c ft_isdigit.c ft_isalnum.c ft_isascii.c ft_isprint.c \
 	ft_vprintf.c \
 	get_next_line.c get_next_line_utils.c
 
-# Create a list of object files based on source files
+PRINTF_FLOAT ?= 0
+ifeq ($(PRINTF_FLOAT),1)
+SRCS += ft_printf_float.c
+else
+SRCS += ft_printf_float_stub.c
+endif
+
 OBJS = $(SRCS:.c=.o)
 
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -O2
 
-# Add dependency flags and derived files
 DEPFLAGS = -MMD -MP
 DEPS = $(SRCS:.c=.d)
 
-# This tells Make: "I want you to build $(NAME)"
 all: $(NAME)
 
-# The Library Rule. This creates the actual .a file
 $(NAME): $(OBJS)
 	ar rcs $(NAME) $(OBJS)
 
-# The Pattern Rule. This tells Make how to compile .c into .o
 $(OBJS): %.o : %.c
 	$(CC) $(CFLAGS) $(DEPFLAGS) -c $< -o $@
 
-# include dependency files if they exist (don't error on first run)
 -include $(DEPS)
 
 clean:

@@ -32,5 +32,6 @@ int		handle_hexadecimal(va_list *ap, const char flag);
 int		handle_signed_number(va_list *ap, const char flag);
 int		handle_unsigned_number(va_list *ap, const char flag);
 int		handle_number(va_list *ap, const char flag);
+int		handle_floating_point_number(va_list *ap, const char flag);
 
 #endif
