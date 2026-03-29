@@ -1,44 +1,14 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin_env.c                                      :+:      :+:    :+:   */
+/*   builtin_unset.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:37 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/03/29 19:00:33 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/03/29 19:03:13 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
 
-int	builtin_env(t_shell *shell, char **argv)
-{
-	int	i;
-
-	if (argv[1])
-	{
-		ft_putendl_fd("env: too many arguments", 2);
-		return (1);
-	}
-	i = 0;
-	while (shell->env && shell->env[i])
-	{
-		if (ft_strchr(shell->env[i], '='))
-			ft_putendl_fd(shell->env[i], 1);
-		i++;
-	}
-	return (0);
-}
-
-// int	main(int argc, char **argv, char **env)
-// {
-// 	t_shell	shell;
-
-// 	(void)argc;
-// 	(void)argv;
-// 	init_shell(&shell, env);
-// 	builtin_env(&shell, argv + 1);
-// 	free_shell(&shell);
-// 	return (0);
-// }

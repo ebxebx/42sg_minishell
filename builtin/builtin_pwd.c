@@ -6,12 +6,11 @@
 /*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:40 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/03/24 20:01:54 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/03/29 19:01:05 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
-
 
 int	builtin_pwd(t_shell *shell)
 {
