@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell_tokenize.h"
+#include "../libft/libft.h"
 
 t_token	*create_token(const char *value, size_t len, t_token_type type)
 {

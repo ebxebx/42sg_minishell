@@ -11,6 +11,7 @@
 /* ************************************************************************** */
 
 #include "minishell_tokenize.h"
+#include "../libft/libft.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -200,6 +201,7 @@ t_ast *parse_pipeline(t_token *tokens)
 /* Recursive Function to Parse Tokens into AST */
 t_ast	*parse_tokens_to_ast(t_token *tokens)
 {
+    // TODO: add logical-operator and parenthesis parsing with proper precedence.
     // For now, build pipelines (left-associative). Extend precedence handling later.
     if (!tokens)
         return (NULL);

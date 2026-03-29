@@ -4,14 +4,20 @@ TEST_CMD  = ./$(NAME) "debug"
 
 LIBFT_DIR = ./libft
 LIBFT     = $(LIBFT_DIR)/libft.a
+PRINTF_FLOAT ?= 0
+LIBFT_MAKE = $(MAKE) -C $(LIBFT_DIR) PRINTF_FLOAT=$(PRINTF_FLOAT)
 
-SRCS =	minishell.c minishell_utils.c \
-		minishell_debug.c builtin/builtin_env.c
+SRCS =	minishell.c minishell_init.c minishell_exec_command.c \
+		minishell_debug.c env/env.c \
+		parsing/tokenize.c parsing/ast.c
 OBJS = $(SRCS:.c=.o)
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -I$(LIBFT_DIR) -g 
+CFLAGS = -Wall -Wextra -Werror -I$(LIBFT_DIR) -I./parsing -g 
 LIB_FLAGS = -L$(LIBFT_DIR) -lft -lreadline
+ifeq ($(PRINTF_FLOAT),1)
+	LIB_FLAGS += -lm
+endif
 
 # Add dependency flags and derived files
 DEPFLAGS = -MMD -MP
@@ -35,7 +41,7 @@ $(NAME): $(OBJS) $(LIBFT)
 	$(CC) $(CFLAGS) $(DEPFLAGS) $(OBJS) $(LIB_FLAGS) -o $(NAME)
 
 $(LIBFT):
-	$(MAKE) -C $(LIBFT_DIR)
+	$(LIBFT_MAKE)
 
 # The Pattern Rule. 
 %.o: %.c
@@ -46,11 +52,11 @@ $(LIBFT):
 
 clean:
 	rm -f $(OBJS) $(BONUS_OBJS) $(DEPS) $(BONUS_DEPS)
-	$(MAKE) -C $(LIBFT_DIR) clean
+	$(LIBFT_MAKE) clean
 
 fclean: clean
 	rm -f $(NAME) $(BONUS)
-	$(MAKE) -C $(LIBFT_DIR) fclean
+	$(LIBFT_MAKE) fclean
 
 re: fclean all
 
