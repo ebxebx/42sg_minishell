@@ -6,7 +6,7 @@
 /*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 12:35:04 by zchoo             #+#    #+#             */
-/*   Updated: 2026/03/24 20:46:49 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/03/30 02:56:40 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,7 @@ typedef struct s_shell
 {
 	int		status;
 	char	**env;
+	char	**export;
 }			t_shell;
 
 void		init_shell(t_shell *shell, char **env);
