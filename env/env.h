@@ -6,7 +6,7 @@
 /*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 12:35:04 by zchoo             #+#    #+#             */
-/*   Updated: 2026/03/28 20:49:02 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/03/29 13:58:15 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@
 # include <unistd.h>
 # include <readline/readline.h>
 # include <readline/history.h>
-# include "libft/libft.h"
+# include "../libft/libft.h"
 # include <linux/limits.h>
 # include "../minishell.h"
 
@@ -31,7 +31,7 @@ int		exec_builtin(t_shell *shell, char **argv);
 int		builtin_echo(char **argv);
 int		builtin_pwd(t_shell *shell);
 int		builtin_env(t_shell	*shell, char **argv);
-char	**dup_env(char **envp);
-void	free_env(char **envp);
+char	**dup_env(char **env);
+
 
 #endif

@@ -1,32 +1,51 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin_env.c                                      :+:      :+:    :+:   */
+/*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:37 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/03/24 20:18:45 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/03/29 13:58:16 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../minishell.h"
+#include "env.h"
+#include "../libft/libft.h"
 
-int	builtin_env(t_shell *shell, char **argv)
+static int	env_count(char **env)
 {
 	int	i;
 
-	if (argv[1])
-	{
-		ft_putendl_fd("env: too many arguments", 2);
-		return (1);
-	}
 	i = 0;
-	while (shell->env && shell->env[i])
+	while (env && env[i])
+		i++;
+	return (i);
+}
+
+char	**dup_env(char **env)
+{
+	int		i;
+	int		n;
+	char	**copy;
+
+	n = env_count(env);
+	copy = malloc(sizeof(char *) * (n + 1));
+	if (!copy)
+		return (NULL);
+	i = 0;
+	while (i < n)
 	{
-		if (ft_strchr(shell->env[i], '='))
-			ft_putendl_fd(shell->env[i], 1);
+		copy[i] = ft_strdup(env[i]);
+		if (!copy[i])
+		{
+			copy[i] = NULL;
+			ft_strarr_free(copy);
+			return (NULL);
+		}
 		i++;
 	}
-	return (0);
+	copy[i] = NULL;
+	return (copy);
 }
