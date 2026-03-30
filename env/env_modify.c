@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env.c                                              :+:      :+:    :+:   */
+/*   env_modify.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:37 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/03/29 13:58:16 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/03/30 02:59:36 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,38 +14,68 @@
 #include "env.h"
 #include "../libft/libft.h"
 
-static int	env_count(char **env)
-{
-	int	i;
-
-	i = 0;
-	while (env && env[i])
-		i++;
-	return (i);
-}
-
-char	**dup_env(char **env)
+char	**add_env_entry(char **env, char *new_entry)
 {
 	int		i;
 	int		n;
-	char	**copy;
+	char	**new_env;
 
 	n = env_count(env);
-	copy = malloc(sizeof(char *) * (n + 1));
-	if (!copy)
+	new_env = malloc(sizeof(char *) * (n + 2));
+	if (!new_env)
 		return (NULL);
 	i = 0;
 	while (i < n)
 	{
-		copy[i] = ft_strdup(env[i]);
-		if (!copy[i])
-		{
-			copy[i] = NULL;
-			ft_strarr_free(copy);
-			return (NULL);
-		}
+		new_env[i] = env[i];
 		i++;
 	}
-	copy[i] = NULL;
-	return (copy);
+	new_env[i] = ft_strdup(new_entry);
+	if (!new_env[i])
+	{
+			free(new_env);
+			return (NULL);
+	}
+	new_env[i + 1] = NULL;
+	free(env);
+	return (new_env);
+}
+
+char	**replace_env_entry(char **env, int index, char *new_entry)
+{
+	char	*copy;
+
+	copy = ft_strdup(new_entry);
+	if (!copy)
+		return (NULL);
+	free(env[index]);
+	env[index] = copy;
+	free(copy);
+	return (env);
+}
+
+char	**update_or_add(char **env, char *str)
+{
+	int	index;
+
+	index = env_index(env, str);
+	if (index != -1)
+		return (replace_env_entry(env, index, str));
+	return (add_env_entry(env, str));
+}
+
+
+int		mark_exported(t_shell *shell, char *str)
+{
+
+}
+
+int		assign_export(t_shell *shell, char *str)
+{
+
+}
+
+void	remove_env_entry(char **env, int index)
+{
+	
 }
