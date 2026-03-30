@@ -4,4 +4,4 @@ minishell
 test
 *.out
 *.gch
-minishell_valgrind.supp
+*.supp
