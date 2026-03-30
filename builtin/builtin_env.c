@@ -6,11 +6,11 @@
 /*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:37 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/03/29 19:00:33 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/03/30 18:10:44 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
+#include "builtin.h"
 
 int	builtin_env(t_shell *shell, char **argv)
 {

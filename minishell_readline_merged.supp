@@ -1,0 +1,89 @@
+# Valgrind suppressions for 42 minishell
+# Goal: hide common readline/history library leaks so your own leaks stay visible.
+# Keep this file focused: do not suppress broad/unknown stacks from your own code.
+
+{
+   <readline_reachable>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   ...
+   fun:readline
+   ...
+}
+
+{
+   <readline_internal_insert_chain>
+   Memcheck:Leak
+   match-leak-kinds: definite,possible,indirect
+   fun:malloc
+   fun:xmalloc
+   fun:rl_add_undo
+   fun:rl_insert_text
+   fun:_rl_insert_char
+   fun:rl_insert
+   fun:_rl_dispatch_subseq
+   fun:readline_internal_char
+   fun:readline
+   ...
+}
+
+{
+   <add_history_reachable>
+   Memcheck:Leak
+   match-leak-kinds: reachable
+   fun:malloc
+   fun:xmalloc
+   fun:add_history
+   fun:alloc_history_entry
+   ...
+}
+
+{
+   <add_history_generic>
+   Memcheck:Leak
+   match-leak-kinds: reachable,possible,indirect
+   fun:malloc
+   fun:xmalloc
+   fun:add_history
+   ...
+}
+
+{
+   <readline_realloc_internal_buffer>
+   Memcheck:Leak
+   match-leak-kinds: reachable,possible,indirect
+   fun:realloc
+   fun:xrealloc
+   fun:rl_extend_line_buffer
+   fun:rl_insert_text
+   fun:rl_bracketed_paste_begin
+   ...
+}
+
+{
+   <rl_initialize>
+   Memcheck:Leak
+   ...
+   fun:rl_initialize
+}
+
+{
+   <rl_redisplay>
+   Memcheck:Leak
+   ...
+   fun:rl_redisplay
+}
+
+{
+   <rl_set_prompt>
+   Memcheck:Leak
+   ...
+   fun:rl_set_prompt
+}
+
+{
+   <readline_internal_char_generic>
+   Memcheck:Leak
+   ...
+   fun:readline_internal_char
+}

@@ -1,18 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env_modify.c                                       :+:      :+:    :+:   */
+/*   env_modify_entry.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:37 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/03/30 02:59:36 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/03/30 18:13:32 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
 #include "env.h"
-#include "../libft/libft.h"
 
 char	**add_env_entry(char **env, char *new_entry)
 {
@@ -33,8 +31,8 @@ char	**add_env_entry(char **env, char *new_entry)
 	new_env[i] = ft_strdup(new_entry);
 	if (!new_env[i])
 	{
-			free(new_env);
-			return (NULL);
+		free(new_env);
+		return (NULL);
 	}
 	new_env[i + 1] = NULL;
 	free(env);
@@ -64,18 +62,19 @@ char	**update_or_add(char **env, char *str)
 	return (add_env_entry(env, str));
 }
 
-
-int		mark_exported(t_shell *shell, char *str)
+char	**remove_env_entry(char **env, char *str)
 {
+	int	index;
 
-}
-
-int		assign_export(t_shell *shell, char *str)
-{
-
-}
-
-void	remove_env_entry(char **env, int index)
-{
-	
+	index = env_index(env, str);
+	if (index == -1)
+		return (env);
+	free(env[index]);
+	while (env[index + 1])
+	{
+		env[index] = env[index + 1];
+		index++;
+	}
+	env[index] = NULL;
+	return (env);
 }

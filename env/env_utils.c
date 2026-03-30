@@ -6,13 +6,11 @@
 /*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:37 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/03/30 02:30:43 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/03/30 18:13:49 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../minishell.h"
 #include "env.h"
-#include "../libft/libft.h"
 
 int	env_count(char **env)
 {
@@ -33,7 +31,8 @@ int	key_len(char *str)
 		len++;
 	return (len);
 }
-int		match_key(char *env_entry, char *key)
+
+int	match_key(char *env_entry, char *key)
 {
 	int	len;
 
@@ -47,23 +46,8 @@ int		match_key(char *env_entry, char *key)
 	}
 	return (0);
 }
-{}
-int		env_index(char **env, char *key)
-{
-	int	i;
 
-	i = 0;
-	while (env && env[i])
-	{
-		if (match_key(env[i], key))
-			return (i);
-		i++;
-	}
-	return (-1);
-	
-}
-
-int		has_equal(char *str)
+int	has_equal(char *str)
 {
 	int	i;
 
@@ -79,7 +63,7 @@ int		has_equal(char *str)
 	return (0);
 }
 
-int		is_valid_identifier(char *str)
+int	is_valid_identifier(char *str)
 {
 	int	i;
 
@@ -95,32 +79,6 @@ int		is_valid_identifier(char *str)
 		i++;
 	}
 	return (1);
-}
-
-char	**dup_env(char **env)
-{
-	int		i;
-	int		n;
-	char	**copy;
-
-	n = env_count(env);
-	copy = malloc(sizeof(char *) * (n + 1));
-	if (!copy)
-		return (NULL);
-	i = 0;
-	while (i < n)
-	{
-		copy[i] = ft_strdup(env[i]);
-		if (!copy[i])
-		{
-			copy[i] = NULL;
-			ft_strarr_free(copy);
-			return (NULL);
-		}
-		i++;
-	}
-	copy[i] = NULL;
-	return (copy);
 }
 
 // int main(int argc, char **argv)

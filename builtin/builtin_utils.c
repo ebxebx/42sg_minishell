@@ -6,11 +6,11 @@
 /*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:26 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/03/24 20:22:07 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/03/30 18:11:06 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "builtin.h"
 
 int	is_builtin(char *builtin_cmd)
 {
