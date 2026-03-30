@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   libft.h                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
+/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 11:01:10 by zchoo             #+#    #+#             */
-/*   Updated: 2026/03/28 20:38:50 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/03/30 21:17:52 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -87,7 +87,9 @@ t_list				*ft_lstmap(t_list *lst, void *(*f)(void *),
 
 size_t				ft_abs(int x);
 int					ft_printf(const char *fmt, ...);
+int					ft_dprintf(int fd, const char *fmt, ...);
 int					ft_vprintf(const char *fmt, va_list *args);
+int					ft_vdprintf(int fd, const char *fmt, va_list *args);
 
 char				*get_next_line(int fd);
 
