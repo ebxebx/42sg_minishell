@@ -11,30 +11,26 @@
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "executor/executor.h"
+#include "parsing/ast.h"
+#include "parsing/minishell_tokenize.h"
 
 void	exec_command(t_shell *shell, char *cmd)
 {
-	pid_t	pid;
-	int		status;
-	char	**args;
+	t_token	*tokens;
+	t_ast	*ast;
 
-	pid = fork();
-	if (pid == 0)
+	tokens = parse_token(cmd);
+	if (!tokens)
+		return ;
+	ast = parse_tokens_to_ast(tokens);
+	if (!ast)
 	{
-		args = ft_split(cmd, ' ');
-		if (!args)
-			exit(EXIT_FAILURE);
-		execve(args[0], args, shell->env);
-		perror("execve");
-		ft_strarr_free(args);
-		exit(EXIT_FAILURE);
-	}
-	else if (pid < 0)
-	{
-		perror("fork");
+		free_token_list(tokens);
+		shell->status = 1;
 		return ;
 	}
-	waitpid(pid, &status, 0);
-	if (WIFEXITED(status))
-		shell->status = WEXITSTATUS(status);
+	shell->status = execute_ast(shell, ast);
+	free_ast(ast);
+	free_token_list(tokens);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
+/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:26 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/03/30 18:11:06 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/03/30 18:22:10 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,7 +42,7 @@ int	exec_builtin(t_shell *shell, char **argv)
 	else if (!ft_strcmp(argv[0], "env"))
 		return (builtin_env(shell, argv));
 	else if (!ft_strcmp(argv[0], "pwd"))
-		return (builtin_pwd());
+		return (builtin_pwd(shell));
 	else if (!ft_strcmp(argv[0], "cd"))
 		return (builtin_cd());
 	else if (!ft_strcmp(argv[0], "export"))

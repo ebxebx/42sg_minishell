@@ -147,7 +147,6 @@ t_token	*parse_token(const char *input)
 		if (!first_token)
 			first_token = token;
 		last_token = token;
-		print_token_list(last_token);
 	}
 	if (last_token)
 		last_token->next = NULL;

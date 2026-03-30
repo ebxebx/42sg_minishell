@@ -6,22 +6,15 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 17:53:44 by zchoo             #+#    #+#             */
-/*   Updated: 2026/03/29 14:07:58 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/03/30 16:32:09 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell_tokenize.h"
+#include "ast.h"
 #include "../libft/libft.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-typedef struct s_ast
-{
-    char			*value;
-    struct s_ast	*left;
-    struct s_ast	*right;
-}					t_ast;
 
 // Function to create a new AST node
 t_ast	*create_node(char *value)
