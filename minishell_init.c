@@ -26,4 +26,5 @@ void	init_shell(t_shell *shell, char **env)
 void	free_shell(t_shell *shell)
 {
 	ft_strarr_free(shell->env);
+	ft_strarr_free(shell->export);
 }

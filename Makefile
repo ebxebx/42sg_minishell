@@ -14,12 +14,18 @@ PRINTF_FLOAT ?= 0
 LIBFT_MAKE = $(MAKE) -C $(LIBFT_DIR) PRINTF_FLOAT=$(PRINTF_FLOAT)
 
 SRCS =	minishell.c minishell_init.c minishell_exec_command.c \
-		minishell_debug.c env/env.c \
+		env/env_modify_entry.c env/env_modify_env+export.c env/env_utils.c \
 		parsing/tokenize.c parsing/ast.c \
 		executor/execute_ast.c executor/execute_command_node.c \
 		executor/execute_pipeline.c \
-		builtin/builtin_echo.c builtin/builtin_env.c \
-		builtin/builtin_pwd.c
+		builtin/builtin_echo.c \
+		builtin/builtin_env.c \
+		builtin/builtin_pwd.c \
+		builtin/builtin_export.c \
+# 		builtin/builtin_unset.c \
+# 		builtin/builtin_cd.c \
+# 		builtin/builtin_exit.c \
+		minishell_debug.c
 OBJS = $(SRCS:.c=.o)
 
 CC = cc

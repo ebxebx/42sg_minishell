@@ -6,23 +6,27 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 00:00:00 by zchoo             #+#    #+#             */
-/*   Updated: 2026/03/30 21:09:10 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/03/31 13:43:29 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
+#include "../builtin/builtin.h"
 #include "../parsing/minishell_tokenize.h"
-
-int	builtin_echo(char **argv);
-int	builtin_env(t_shell *shell, char **argv);
-int	builtin_pwd(t_shell *shell);
 
 static int	is_builtin_command(char *cmd)
 {
 	if (!cmd)
 		return (0);
-	return (!ft_strcmp(cmd, "echo") || !ft_strcmp(cmd, "env")
-		|| !ft_strcmp(cmd, "pwd"));
+	return (0
+		|| !ft_strcmp(cmd, "echo") 
+		|| !ft_strcmp(cmd, "env")
+		|| !ft_strcmp(cmd, "pwd") 
+		// || !ft_strcmp(cmd, "export")
+		// || !ft_strcmp(cmd, "unset")
+		// || !ft_strcmp(cmd, "exit")
+		// || !ft_strcmp(cmd, "cd")
+	);
 }
 
 static int	run_builtin(t_shell *shell, char **argv)
@@ -33,6 +37,14 @@ static int	run_builtin(t_shell *shell, char **argv)
 		return (builtin_env(shell, argv));
 	if (!ft_strcmp(argv[0], "pwd"))
 		return (builtin_pwd(shell));
+	// if (!ft_strcmp(argv[0], "export"))
+	// 	return (builtin_export(shell, argv));
+	// if (!ft_strcmp(argv[0], "unset"))
+	// 	return (builtin_unset(shell, argv));
+	// if (!ft_strcmp(argv[0], "exit"))
+	// 	return (builtin_exit(shell, argv));
+	// if (!ft_strcmp(argv[0], "pwd"))
+	// 	return (builtin_pwd(shell));
 	return (1);
 }
 

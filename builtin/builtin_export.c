@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_export.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
+/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:37 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/03/31 12:01:31 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/03/31 12:39:39 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ int	builtin_export(t_shell *shell, char **argv)
 	return (status);
 }
 
-int	main(int argc, char **argv, char **env)
+/* int	main(int argc, char **argv, char **env)
 {
 	t_shell	shell;
 	int		status;
@@ -96,4 +96,4 @@ int	main(int argc, char **argv, char **env)
 		status = builtin_export(&shell, argv + 1);
 	free_shell(&shell);
 	return (status);
-}
+} */
