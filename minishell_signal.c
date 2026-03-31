@@ -1,36 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.c                                        :+:      :+:    :+:   */
+/*   minishell_signal.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/02 12:30:09 by zchoo             #+#    #+#             */
-/*   Updated: 2026/03/31 19:31:29 by zchoo            ###   ########.fr       */
+/*   Created: 2026/03/31 19:29:50 by zchoo             #+#    #+#             */
+/*   Updated: 2026/03/31 20:42:48 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int	main(int argc, char **argv, char **env)
-{
-	t_shell	shell;
-	char	*cmd;
+sig_atomic_t	g_signal = 0;
 
-	(void)argc;
-	(void)argv;
-	init_shell(&shell, env);
-	init_signal();
-	// Main loop
-	while (1)
+static void	sigint_handler(int signo)
+{
+	if (signo == SIGINT)
 	{
-		cmd = readline("minishell> ");
-		if (!cmd)
-			break ;
-		add_history(cmd);
-		exec_command(&shell, cmd);
-		free(cmd);
+		write(1, "\n", 1);
+		rl_on_new_line();
+        rl_replace_line("", 0);
+        rl_redisplay();
+		g_signal = signo;
 	}
-	free_shell(&shell);
-	return (0);
+}
+
+static void	sigquit_handler(int signo)
+{
+	if (signo == SIGQUIT)
+	{
+		write(1, "Quit (core dumped)\n", 20);
+		g_signal = signo;
+	}
+}
+
+void	init_signal(void)
+{
+	signal(SIGINT, sigint_handler);
+	signal(SIGQUIT, sigquit_handler);
 }
