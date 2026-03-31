@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 00:00:00 by zchoo             #+#    #+#             */
-/*   Updated: 2026/03/30 00:00:00 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/03/31 16:53:50 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +70,8 @@ static int	is_parent_builtin(char *cmd)
 {
 	if (!cmd)
 		return (0);
-	return (!ft_strcmp(cmd, "export") || !ft_strcmp(cmd, "unset"));
+	return (!ft_strcmp(cmd, "export") || !ft_strcmp(cmd, "unset")
+		|| !ft_strcmp(cmd, "cd") || !ft_strcmp(cmd, "exit"));
 }
 
 static int	execute_parent_builtin(t_shell *shell, char **argv)
@@ -79,6 +80,10 @@ static int	execute_parent_builtin(t_shell *shell, char **argv)
 		return (builtin_export(shell, argv));
 	if (!ft_strcmp(argv[0], "unset"))
 		return (builtin_unset(shell, argv));
+	if (!ft_strcmp(argv[0], "cd"))
+		return (builtin_cd(argv));
+	if (!ft_strcmp(argv[0], "exit"))
+		return (builtin_exit(shell));
 	return (1);
 }
 
