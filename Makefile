@@ -1,6 +1,8 @@
 NAME      = minishell
 
 TEST_CMD  = ./$(NAME) "debug"
+TEST_EXPORT = cc -Wall -Werror -Wextra builtin_export.c ../minishell_init.c ../libft/libft.a -I.. -I../libft \
+ ../env/env_modify_entry.c ../env/env_modify_env+export.c ../env/env_utils.c builtin_env.c && ./a.out
 
 LIBFT_DIR = ./libft
 LIBFT     = $(LIBFT_DIR)/libft.a
@@ -33,6 +35,9 @@ all: $(NAME)
 
 test: $(NAME)
 	$(TEST_CMD)
+
+test_export:
+	$(TEST_EXPORT)
 
 test2: $(NAME)
 	valgrind --leak-check=full $(TEST_CMD)
