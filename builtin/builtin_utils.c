@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:26 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/03/30 18:22:10 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/03/31 15:19:51 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,12 +44,12 @@ int	exec_builtin(t_shell *shell, char **argv)
 	else if (!ft_strcmp(argv[0], "pwd"))
 		return (builtin_pwd(shell));
 	else if (!ft_strcmp(argv[0], "cd"))
-		return (builtin_cd());
+		return (builtin_cd(argv));
 	else if (!ft_strcmp(argv[0], "export"))
-		return (builtin_export());
+		return (builtin_export(shell, argv));
 	else if (!ft_strcmp(argv[0], "unset"))
-		return (builtin_unset());
+		return (builtin_unset(shell, argv));
 	else if (!ft_strcmp(argv[0], "exit"))
-		return (builtin_exit());
+		return (builtin_exit(shell));
 	return (0);
 }

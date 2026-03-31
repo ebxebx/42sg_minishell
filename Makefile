@@ -22,10 +22,11 @@ SRCS =	minishell.c minishell_init.c minishell_exec_command.c \
 		builtin/builtin_env.c \
 		builtin/builtin_pwd.c \
 		builtin/builtin_export.c \
-# 		builtin/builtin_unset.c \
-# 		builtin/builtin_cd.c \
-# 		builtin/builtin_exit.c \
-		minishell_debug.c
+ 		builtin/builtin_unset.c \
+ 		builtin/builtin_cd.c \
+ 		builtin/builtin_exit.c \
+#		builtin/builtin_utils.c \
+#		minishell_debug.c
 OBJS = $(SRCS:.c=.o)
 
 CC = cc

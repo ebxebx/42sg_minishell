@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_modify_env+export.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:37 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/03/31 13:43:56 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/03/31 16:31:50 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int	assign_export(t_shell *shell, char *str)
 	// printf("env index = %d\n", env_index(shell->env, str));
 	return (0);
 }
-
+//duplicate env variables from OS
 char	**dup_env(char **env)
 {
 	int		i;

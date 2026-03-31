@@ -6,7 +6,7 @@
 /*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 12:35:04 by zchoo             #+#    #+#             */
-/*   Updated: 2026/03/30 18:12:50 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/03/31 14:57:46 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,5 @@ char	**update_or_add(char **env, char *str);
 char	**remove_env_entry(char **env, char *str);
 int		mark_exported(t_shell *shell, char *str);
 int		assign_export(t_shell *shell, char *str);
-
-
 
 #endif

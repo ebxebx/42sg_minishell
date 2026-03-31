@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ast.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 17:53:44 by zchoo             #+#    #+#             */
-/*   Updated: 2026/03/30 16:32:09 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/03/31 15:55:03 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -142,7 +142,6 @@ t_ast	*parse_cmd(t_token **tokens)
         }
         free(cmd_buf);
     }
-
     // Handle trailing redirections after command
     while (p && is_redirection(p->value))
     {
@@ -165,7 +164,6 @@ t_ast	*parse_cmd(t_token **tokens)
         }
         p = file->next;
     }
-
     *tokens = p;
     return (ast);
 }

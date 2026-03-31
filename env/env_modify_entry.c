@@ -6,12 +6,13 @@
 /*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:37 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/03/30 18:13:32 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/03/31 16:20:17 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "env.h"
 
+//add new key=value entry and free old env array
 char	**add_env_entry(char **env, char *new_entry)
 {
 	int		i;
@@ -39,6 +40,7 @@ char	**add_env_entry(char **env, char *new_entry)
 	return (new_env);
 }
 
+//assign copy to new entry, find line index, replace w copy, then free 
 char	**replace_env_entry(char **env, int index, char *new_entry)
 {
 	char	*copy;
@@ -52,6 +54,7 @@ char	**replace_env_entry(char **env, int index, char *new_entry)
 	return (env);
 }
 
+//either replace or add
 char	**update_or_add(char **env, char *str)
 {
 	int	index;
@@ -62,6 +65,7 @@ char	**update_or_add(char **env, char *str)
 	return (add_env_entry(env, str));
 }
 
+//find index, free line, assign to next line, then last point to null
 char	**remove_env_entry(char **env, char *str)
 {
 	int	index;

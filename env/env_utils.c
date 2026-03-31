@@ -6,7 +6,7 @@
 /*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:37 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/03/30 18:13:49 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/03/31 16:30:21 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ int	env_count(char **env)
 		i++;
 	return (i);
 }
-
+//finds length of key
 int	key_len(char *str)
 {
 	int	len;
@@ -32,6 +32,7 @@ int	key_len(char *str)
 	return (len);
 }
 
+//matches the key only
 int	match_key(char *env_entry, char *key)
 {
 	int	len;
@@ -46,7 +47,7 @@ int	match_key(char *env_entry, char *key)
 	}
 	return (0);
 }
-
+//checks if str has '='
 int	has_equal(char *str)
 {
 	int	i;
@@ -62,7 +63,7 @@ int	has_equal(char *str)
 	}
 	return (0);
 }
-
+//check whether starts with _ & alpha then _ & alphanum
 int	is_valid_identifier(char *str)
 {
 	int	i;

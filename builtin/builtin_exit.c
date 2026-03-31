@@ -1,39 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin_unset.c                                    :+:      :+:    :+:   */
+/*   builtin_exit.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:37 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/03/31 13:49:28 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/03/31 14:56:53 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtin.h"
 
-int	builtin_unset(t_shell *shell, char **argv)
+int	builtin_exit(t_shell *shell)
 {
-	int	i;
-	int	status;
-
-	i = 1;
-	status = 0;
-	while (argv[i])
-	{
-		if (!is_valid_identifier(argv[i]))
-		{
-			ft_putstr_fd("minishell: unset: ", 2);
-			ft_putstr_fd(argv[i], 2);
-			ft_putendl_fd(": not a valid identifier", 2);
-			status = 1;
-		}
-		else
-		{
-			shell->env = remove_env_entry(shell->env, argv[i]);
-			shell->export = remove_env_entry(shell->export, argv[i]);
-		}
-		i++;
-	}
-	return (status);
+	ft_putendl_fd("exit", 1);
+	free_shell(shell);
+	exit(shell->status);
 }

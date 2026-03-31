@@ -1,39 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   builtin_unset.c                                    :+:      :+:    :+:   */
+/*   builtin_cd.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:37 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/03/31 13:49:28 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/03/31 15:59:37 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtin.h"
 
-int	builtin_unset(t_shell *shell, char **argv)
+int	builtin_cd(char **argv)
 {
-	int	i;
-	int	status;
-
-	i = 1;
-	status = 0;
-	while (argv[i])
+	if (!argv[1])
 	{
-		if (!is_valid_identifier(argv[i]))
-		{
-			ft_putstr_fd("minishell: unset: ", 2);
-			ft_putstr_fd(argv[i], 2);
-			ft_putendl_fd(": not a valid identifier", 2);
-			status = 1;
-		}
-		else
-		{
-			shell->env = remove_env_entry(shell->env, argv[i]);
-			shell->export = remove_env_entry(shell->export, argv[i]);
-		}
-		i++;
+		ft_putstr_fd("minishell: cd ", 2);
+		ft_putendl_fd(": missing argument", 2);
+		return (1);
 	}
-	return (status);
+	if (chdir(argv[1]) == -1)
+	{
+		perror("minishell: cd");
+		return (1);
+	}
+	return (0);
 }
