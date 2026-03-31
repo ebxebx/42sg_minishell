@@ -6,7 +6,7 @@
 /*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:37 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/03/30 18:13:12 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/03/31 01:04:57 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ int	mark_exported(t_shell *shell, char *str)
 	if (!new_export)
 		return (1);
 	shell->export = new_export;
+	return (0);
 }
 
 //for "export a= and a=42"
@@ -53,6 +54,9 @@ int	assign_export(t_shell *shell, char *str)
 	if (!new_export)
 		return (1);
 	shell->export = new_export;
+	printf("arg = [%s]\n", str);
+	printf("export index = %d\n", env_index(shell->export, str));
+	printf("env index = %d\n", env_index(shell->env, str));
 	return (0);
 }
 
