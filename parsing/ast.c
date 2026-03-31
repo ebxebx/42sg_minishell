@@ -16,6 +16,46 @@
 #include <stdlib.h>
 #include <string.h>
 
+static void	free_redirs(t_redir *redir)
+{
+	t_redir	*next;
+
+	while (redir)
+	{
+		next = redir->next;
+		free(redir->file);
+		free(redir);
+		redir = next;
+	}
+}
+
+static int	append_redir(t_ast *ast, t_token_type type, const char *file)
+{
+	t_redir	*new_redir;
+	t_redir	*cur;
+
+	if (!ast || !file)
+		return (1);
+	new_redir = malloc(sizeof(t_redir));
+	if (!new_redir)
+		return (1);
+	new_redir->type = type;
+	new_redir->file = strdup(file);
+	new_redir->next = NULL;
+	if (!new_redir->file)
+		return (free(new_redir), 1);
+	if (!ast->redirs)
+	{
+		ast->redirs = new_redir;
+		return (0);
+	}
+	cur = ast->redirs;
+	while (cur->next)
+		cur = cur->next;
+	cur->next = new_redir;
+	return (0);
+}
+
 // Function to create a new AST node
 t_ast	*create_node(char *value)
 {
@@ -27,6 +67,7 @@ t_ast	*create_node(char *value)
     new_node->value = value ? strdup(value) : strdup("");
     new_node->left = NULL;
     new_node->right = NULL;
+    new_node->redirs = NULL;
     return (new_node);
 }
 
@@ -37,6 +78,7 @@ void	free_ast(t_ast *node)
     {
         free_ast(node->left);
         free_ast(node->right);
+        free_redirs(node->redirs);
         free(node->value);
         free(node);
     }
@@ -56,12 +98,10 @@ int	is_operator(char *token)
         || strcmp(token, "&&") == 0);
 }
 
-static int is_redirection(const char *tok)
+static int	is_redirection_type(t_token_type type)
 {
-    if (!tok)
-        return (0);
-    return (strcmp(tok, "<") == 0 || strcmp(tok, "<<") == 0
-        || strcmp(tok, ">") == 0 || strcmp(tok, ">>") == 0);
+	return (type == TOKEN_REDIRECT_IN || type == TOKEN_REDIRECT_OUT
+		|| type == TOKEN_REDIRECT_HEREDOC || type == TOKEN_REDIRECT_APPEND);
 }
 
 /*
@@ -74,96 +114,67 @@ This function consumes tokens by advancing *tokens to the next unconsumed token.
 t_ast	*parse_cmd(t_token **tokens)
 {
     t_token	*p;
-    t_ast	*ast = NULL;
+    t_ast	*ast;
     char	*cmd_buf = NULL;
     size_t	buf_len = 0;
+	size_t	vlen;
+	char	*new_buf;
 
     if (!tokens || !*tokens)
         return (NULL);
     p = *tokens;
-
-    // Handle leading redirections before command
-    while (p && is_redirection(p->value))
-    {
-        t_token *file = p->next;
-        if (!file)
-            break; // malformed, stop processing
-        if (!ast)
-            ast = create_node("");
-        if (strcmp(p->value, "<") == 0 || strcmp(p->value, "<<") == 0)
-        {
-            // input redirection -> attach to left
-            if (ast->left)
-                free_ast(ast->left);
-            ast->left = create_node(file->value);
-        }
-        else
-        {
-            // output redirection -> attach to right
-            if (ast->right)
-                free_ast(ast->right);
-            ast->right = create_node(file->value);
-        }
-        p = file->next;
-    }
-
-    // Collect consecutive words into a single command string
-    while (p && !is_operator(p->value) && strcmp(p->value, "(") != 0 && !is_redirection(p->value))
-    {
-        size_t vlen = strlen(p->value);
-        char *new_buf = realloc(cmd_buf, buf_len + vlen + 2); // +1 for space or NUL
-        if (!new_buf)
-        {
-            free(cmd_buf);
-            return (NULL);
-        }
-        cmd_buf = new_buf;
-        if (buf_len == 0)
-            memcpy(cmd_buf + buf_len, p->value, vlen);
-        else
-        {
-            cmd_buf[buf_len] = ' ';
-            memcpy(cmd_buf + buf_len + 1, p->value, vlen);
-            vlen += 1;
-        }
-        buf_len += vlen;
-        cmd_buf[buf_len] = '\0';
-        p = p->next;
-    }
+	ast = create_node("");
+	if (!ast)
+		return (NULL);
+    while (p && strcmp(p->value, "|") != 0 
+		/*&& strcmp(p->value, "(") != 0
+		&& strcmp(p->value, ")") != 0 
+		&& strcmp(p->value, "&&") != 0
+		&& strcmp(p->value, "||") != 0*/)
+	{
+		// Ether word or redirection
+		if (is_redirection_type(p->type))
+		{
+			if (!p->next || p->next->type != TOKEN_WORD
+				|| append_redir(ast, p->type, p->next->value))
+			{
+				free(cmd_buf);
+				free_ast(ast);
+				return (NULL);
+			}
+			p = p->next->next;
+			continue ;
+		}
+		vlen = strlen(p->value);
+		new_buf = realloc(cmd_buf, buf_len + vlen + 2);
+		if (!new_buf)
+		{
+			free(cmd_buf);
+			free_ast(ast);
+			return (NULL);
+		}
+		cmd_buf = new_buf;
+		if (buf_len == 0)
+			memcpy(cmd_buf + buf_len, p->value, vlen);
+		else
+		{
+			cmd_buf[buf_len] = ' ';
+			memcpy(cmd_buf + buf_len + 1, p->value, vlen);
+			vlen += 1;
+		}
+		buf_len += vlen;
+		cmd_buf[buf_len] = '\0';
+		p = p->next;
+	}
 
     if (cmd_buf)
     {
-        if (!ast)
-            ast = create_node(cmd_buf);
-        else
-        {
-            free(ast->value);
-            ast->value = strdup(cmd_buf);
-        }
+		free(ast->value);
+		ast->value = strdup(cmd_buf);
         free(cmd_buf);
-    }
-    // Handle trailing redirections after command
-    while (p && is_redirection(p->value))
-    {
-        t_token *file = p->next;
-        if (!file)
-            break; // malformed
-        if (!ast)
-            ast = create_node("");
-        if (strcmp(p->value, "<") == 0 || strcmp(p->value, "<<") == 0)
-        {
-            if (ast->left)
-                free_ast(ast->left);
-            ast->left = create_node(file->value);
-        }
-        else
-        {
-            if (ast->right)
-                free_ast(ast->right);
-            ast->right = create_node(file->value);
-        }
-        p = file->next;
-    }
+		if (!ast->value)
+			return (free_ast(ast), NULL);
+	}
     *tokens = p;
     return (ast);
 }
@@ -202,14 +213,35 @@ t_ast	*parse_tokens_to_ast(t_token *tokens)
 /* Print AST (for debugging purposes) */
 void	print_ast(t_ast *node, int depth)
 {
-    if (node)
-    {
-        print_ast(node->right, depth + 1);
-        for (int i = 0; i < depth; i++)
-            printf("    ");
-        printf("%s\n", node->value);
-        print_ast(node->left, depth + 1);
-    }
+	t_redir	*redir;
+
+	if (!node)
+		return ;
+	print_ast(node->right, depth + 1);
+	for (int i = 0; i < depth; i++)
+		printf("    ");
+	printf("%s", node->value);
+	redir = node->redirs;
+	if (redir)
+		printf(" [");
+	while (redir)
+	{
+		if (redir->type == TOKEN_REDIRECT_IN)
+			printf("< %s", redir->file);
+		else if (redir->type == TOKEN_REDIRECT_OUT)
+			printf("> %s", redir->file);
+		else if (redir->type == TOKEN_REDIRECT_APPEND)
+			printf(">> %s", redir->file);
+		else if (redir->type == TOKEN_REDIRECT_HEREDOC)
+			printf("<< %s", redir->file);
+		if (redir->next)
+			printf(", ");
+		redir = redir->next;
+	}
+	if (node->redirs)
+		printf("]");
+	printf("\n");
+	print_ast(node->left, depth + 1);
 }
 
 /* Main function for testing */

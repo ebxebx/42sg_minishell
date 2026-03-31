@@ -24,6 +24,7 @@ void	exec_command(t_shell *shell, char *cmd)
 	if (!tokens)
 		return ;
 	ast = parse_tokens_to_ast(tokens);
+	print_ast(ast, 0); // Debug: print the AST structure
 	if (!ast)
 	{
 		free_token_list(tokens);

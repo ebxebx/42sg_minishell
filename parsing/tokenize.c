@@ -61,15 +61,9 @@ t_token	*parse_token(const char *input)
 
 	first_token = NULL;
 	last_token = NULL;
-	int		single_quote;
-	int		quote_open;
 
 	int		i;
 	size_t	len;
-
-	single_quote = 0;
-	quote_open = 0;
-	last_token = NULL;
 
 	i = 0;
 	if (!input || !*input)

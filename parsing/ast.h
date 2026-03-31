@@ -15,11 +15,19 @@
 
 # include "minishell_tokenize.h"
 
+typedef struct s_redir
+{
+	t_token_type		type;
+	char				*file;
+	struct s_redir		*next;
+}					t_redir;
+
 typedef struct s_ast
 {
 	char			*value;
 	struct s_ast	*left;
 	struct s_ast	*right;
+	t_redir			*redirs;
 }					t_ast;
 
 t_ast				*parse_tokens_to_ast(t_token *tokens);

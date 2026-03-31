@@ -22,5 +22,6 @@ void	execute_ast_child(t_shell *shell, t_ast *ast);
 int	execute_command_node(t_shell *shell, t_ast *cmd);
 int	execute_pipeline(t_shell *shell, t_ast *ast);
 void	execute_command_child(t_shell *shell, t_ast *cmd);
+int	apply_redirections(t_ast *cmd);
 
 #endif

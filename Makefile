@@ -15,10 +15,10 @@ LIBFT_MAKE = $(MAKE) -C $(LIBFT_DIR) PRINTF_FLOAT=$(PRINTF_FLOAT)
 
 SRCS =	minishell.c minishell_init.c minishell_exec_command.c \
 		env/env_modify_entry.c env/env_modify_env+export.c env/env_utils.c \
-		parsing/tokenize.c parsing/ast.c \
-		executor/execute_ast.c executor/execute_command_node.c \
-		executor/execute_pipeline.c \
-		builtin/builtin_echo.c \
+			parsing/tokenize.c parsing/ast.c \
+			executor/execute_ast.c executor/execute_command_node.c \
+			executor/execute_pipeline.c executor/redirection.c \
+			builtin/builtin_echo.c \
 		builtin/builtin_env.c \
 		builtin/builtin_pwd.c \
 		builtin/builtin_export.c \
@@ -30,7 +30,7 @@ SRCS =	minishell.c minishell_init.c minishell_exec_command.c \
 OBJS = $(SRCS:.c=.o)
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -I$(LIBFT_DIR) -I./parsing -I. -g 
+CFLAGS = -Wall -Wextra -Werror -g 
 LIB_FLAGS = -L$(LIBFT_DIR) -lft -lreadline
 ifeq ($(PRINTF_FLOAT),1)
 	LIB_FLAGS += -lm

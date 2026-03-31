@@ -148,27 +148,6 @@ static int	exec_with_path(char **argv, char **env)
 	return (127);
 }
 
-static int	apply_redirections(t_ast *cmd)
-{
-	int	fd;
-
-	if (cmd->left)
-	{
-		fd = open(cmd->left->value, O_RDONLY);
-		if (fd < 0 || dup2(fd, STDIN_FILENO) < 0)
-			return (perror(cmd->left->value), 1);
-		close(fd);
-	}
-	if (cmd->right)
-	{
-		fd = open(cmd->right->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (fd < 0 || dup2(fd, STDOUT_FILENO) < 0)
-			return (perror(cmd->right->value), 1);
-		close(fd);
-	}
-	return (0);
-}
-
 void	execute_command_child(t_shell *shell, t_ast *cmd)
 {
 	int		status;

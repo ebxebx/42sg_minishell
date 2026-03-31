@@ -87,27 +87,6 @@ static int	execute_parent_builtin(t_shell *shell, char **argv)
 	return (1);
 }
 
-static int	apply_redirections(t_ast *cmd)
-{
-	int	fd;
-
-	if (cmd->left)
-	{
-		fd = open(cmd->left->value, O_RDONLY);
-		if (fd < 0 || dup2(fd, STDIN_FILENO) < 0)
-			return (perror(cmd->left->value), 1);
-		close(fd);
-	}
-	if (cmd->right)
-	{
-		fd = open(cmd->right->value, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (fd < 0 || dup2(fd, STDOUT_FILENO) < 0)
-			return (perror(cmd->right->value), 1);
-		close(fd);
-	}
-	return (0);
-}
-
 static int	execute_parent_builtin_node(t_shell *shell, t_ast *ast, char **argv)
 {
 	int	saved_stdin;
