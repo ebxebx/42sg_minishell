@@ -169,35 +169,49 @@ static int	apply_redirections(t_ast *cmd)
 	return (0);
 }
 
-int	execute_command_node(t_shell *shell, t_ast *cmd)
+void	execute_command_child(t_shell *shell, t_ast *cmd)
 {
-	pid_t	pid;
 	int		status;
 	char	**argv;
 
 	if (!shell || !cmd || !cmd->value || !cmd->value[0])
-		return (1);
+		exit(1);
 	argv = build_argv(cmd->value);
 	if (!argv || !argv[0])
-		return (ft_strarr_free(argv), 1);
-	pid = fork();
-	if (pid < 0)
-		return (perror("fork"), ft_strarr_free(argv), 1);
-	if (pid == 0)
+		exit(1);
+	if (apply_redirections(cmd))
 	{
-		if (apply_redirections(cmd))
-			exit(1);
-		if (is_builtin_command(argv[0]))
-			exit(run_builtin(shell, argv));
-		status = exec_with_path(argv, shell->env);
-		if (status == 127)
-			ft_dprintf(2, "%s: command not found\n", argv[0]);
-		else if (errno)
-			perror(argv[0]);
+		ft_strarr_free(argv);
+		exit(1);
+	}
+	if (is_builtin_command(argv[0]))
+	{
+		status = run_builtin(shell, argv);
+		ft_strarr_free(argv);
 		exit(status);
 	}
-	waitpid(pid, &status, 0);
+	status = exec_with_path(argv, shell->env);
+	if (status == 127)
+		ft_dprintf(2, "%s: command not found\n", argv[0]);
+	else if (errno)
+		perror(argv[0]);
 	ft_strarr_free(argv);
+	exit(status);
+}
+
+int	execute_command_node(t_shell *shell, t_ast *cmd)
+{
+	pid_t	pid;
+	int		status;
+
+	if (!shell || !cmd || !cmd->value || !cmd->value[0])
+		return (1);
+	pid = fork();
+	if (pid < 0)
+		return (perror("fork"), 1);
+	if (pid == 0)
+		execute_command_child(shell, cmd);
+	waitpid(pid, &status, 0);
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
 	return (1);

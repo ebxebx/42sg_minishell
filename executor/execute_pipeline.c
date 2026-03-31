@@ -12,10 +12,61 @@
 
 #include "executor.h"
 
+static void	close_pipe(int *pipe_fd)
+{
+	close(pipe_fd[0]);
+	close(pipe_fd[1]);
+}
+
+static pid_t	fork_pipe_side(t_shell *shell, t_ast *ast, int *pipe_fd, int is_left)
+{
+	pid_t	pid;
+
+	pid = fork();
+	if (pid < 0)
+		return (perror("fork"), -1);
+	if (pid == 0)
+	{
+		if (is_left && dup2(pipe_fd[1], STDOUT_FILENO) < 0)
+		{
+			perror("dup2");
+			exit(1);
+		}
+		if (!is_left && dup2(pipe_fd[0], STDIN_FILENO) < 0)
+		{
+			perror("dup2");
+			exit(1);
+		}
+		close_pipe(pipe_fd);
+		execute_ast_child(shell, ast);
+	}
+	return (pid);
+}
+
 int	execute_pipeline(t_shell *shell, t_ast *ast)
 {
-	(void)shell;
-	(void)ast;
-	ft_putstr_fd("pipeline execution not implemented yet\n", 2);
+	int		pipe_fd[2];
+	pid_t	left_pid;
+	pid_t	right_pid;
+	int		left_status;
+	int		right_status;
+
+	if (!shell || !ast || ft_strcmp(ast->value, "|"))
+		return (1);
+	if (pipe(pipe_fd) < 0)
+		return (perror("pipe"), 1);
+	left_pid = fork_pipe_side(shell, ast->left, pipe_fd, 1);
+	if (left_pid < 0)
+		return (close_pipe(pipe_fd), 1);
+	right_pid = fork_pipe_side(shell, ast->right, pipe_fd, 0);
+	if (right_pid < 0)
+		return (close_pipe(pipe_fd), 1);
+	close_pipe(pipe_fd);
+	left_status = 0;
+	right_status = 0;
+	waitpid(left_pid, &left_status, 0);
+	waitpid(right_pid, &right_status, 0);
+	if (WIFEXITED(right_status))
+		return (WEXITSTATUS(right_status));
 	return (1);
 }

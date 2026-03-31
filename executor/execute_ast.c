@@ -20,3 +20,12 @@ int	execute_ast(t_shell *shell, t_ast *ast)
 		return (execute_pipeline(shell, ast));
 	return (execute_command_node(shell, ast));
 }
+
+void	execute_ast_child(t_shell *shell, t_ast *ast)
+{
+	if (!shell || !ast)
+		exit(1);
+	if (!ft_strcmp(ast->value, "|"))
+		exit(execute_pipeline(shell, ast));
+	execute_command_child(shell, ast);
+}
