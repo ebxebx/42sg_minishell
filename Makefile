@@ -1,8 +1,12 @@
 NAME      = minishell
 
 TEST_CMD  = ./$(NAME) "debug"
-TEST_EXPORT = cc -Wall -Werror -Wextra builtin_export.c ../minishell_init.c ../libft/libft.a -I.. -I../libft \
- ../env/env_modify_entry.c ../env/env_modify_env+export.c ../env/env_utils.c builtin_env.c && ./a.out
+TEST_EXPORT = cc -Wall -Werror -Wextra \
+ 	env/env_modify_entry.c env/env_modify_env+export.c env/env_utils.c \
+	builtin/builtin_export.c builtin/builtin_env.c \
+	minishell_init.c \
+	libft/libft.a -I. -I./libft \
+	-o test_export.out
 
 LIBFT_DIR = ./libft
 LIBFT     = $(LIBFT_DIR)/libft.a
@@ -10,7 +14,7 @@ PRINTF_FLOAT ?= 0
 LIBFT_MAKE = $(MAKE) -C $(LIBFT_DIR) PRINTF_FLOAT=$(PRINTF_FLOAT)
 
 SRCS =	minishell.c minishell_init.c minishell_exec_command.c \
-		minishell_debug.c env/env.c \
+		minishell_debug.c \
 		parsing/tokenize.c parsing/ast.c
 OBJS = $(SRCS:.c=.o)
 
@@ -38,6 +42,7 @@ test: $(NAME)
 
 test_export:
 	$(TEST_EXPORT)
+	./test_export.out export a=5
 
 test2: $(NAME)
 	valgrind --leak-check=full $(TEST_CMD)
