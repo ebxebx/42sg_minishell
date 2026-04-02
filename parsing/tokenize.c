@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
+/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 15:52:36 by zchoo             #+#    #+#             */
-/*   Updated: 2026/03/28 20:09:22 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/04/02 16:54:10 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,20 @@ t_token	*create_token(const char *value, size_t len, t_token_type type)
 	return (new_token);
 }
 
+static int is_operator(char *token)
+{
+	if (!token)
+		return (0);
+	if (
+		//ft_strncmp(token, "||", 2) == 0 || ft_strncmp(token, "&&", 2) == 0 ||
+		ft_strncmp(token, "<<", 2) == 0 || ft_strncmp(token, ">>", 2) == 0 ||
+		!ft_strncmp(token, "|", 1) || !ft_strncmp(token, ">", 1) ||
+		!ft_strncmp(token, "<", 1)
+	)
+		return (1);
+	return (0);
+}
+
 size_t token_len(const char *input, size_t start)
 {
 	size_t	len = 0;
@@ -45,6 +59,8 @@ size_t token_len(const char *input, size_t start)
 			double_quote = !double_quote;
 
 		if (!single_quote && !double_quote && isspace(input[start + len]))
+			break;
+		if (is_operator((char *)&input[start + len]))
 			break;
 		len++;
 	}

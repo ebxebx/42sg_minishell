@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_command_node.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
+/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 00:00:00 by zchoo             #+#    #+#             */
-/*   Updated: 2026/03/31 15:25:42 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/04/02 15:58:58 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -169,6 +169,8 @@ void	execute_command_child(t_shell *shell, t_ast *cmd)
 		ft_strarr_free(argv);
 		exit(status);
 	}
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
 	status = exec_with_path(argv, shell->env);
 	if (status == 127)
 		ft_dprintf(2, "%s: command not found\n", argv[0]);
