@@ -39,6 +39,7 @@ void				init_shell(t_shell *shell, char **env);
 void				exec_command(t_shell *shell, char *cmd);
 void				free_shell(t_shell *shell);
 
-void				init_signal(void);
+void				init_signal_prompt(void);
+void				init_signal_exec(void);
 
 #endif

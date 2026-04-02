@@ -192,8 +192,16 @@ int	execute_command_node(t_shell *shell, t_ast *cmd)
 		return (perror("fork"), 1);
 	if (pid == 0)
 		execute_command_child(shell, cmd);
-	waitpid(pid, &status, 0);
+	init_signal_exec();
+	while (waitpid(pid, &status, 0) < 0)
+	{
+		if (errno != EINTR)
+			return (init_signal_prompt(), perror("waitpid"), 1);
+	}
+	init_signal_prompt();
 	if (WIFEXITED(status))
 		return (WEXITSTATUS(status));
+	if (WIFSIGNALED(status))
+		return (128 + WTERMSIG(status));
 	return (1);
 }

@@ -14,29 +14,35 @@
 
 sig_atomic_t	g_signal = 0;
 
-static void	sigint_handler(int signo)
+static void	sigint_prompt_handler(int signo)
 {
 	if (signo == SIGINT)
 	{
 		write(1, "\n", 1);
 		rl_on_new_line();
-        rl_replace_line("", 0);
-        rl_redisplay();
+		rl_replace_line("", 0);
+		rl_redisplay();
 		g_signal = signo;
 	}
 }
 
-static void	sigquit_handler(int signo)
+static void	sigint_exec_handler(int signo)
 {
-	if (signo == SIGQUIT)
+	if (signo == SIGINT)
 	{
-		write(1, "Quit (core dumped)\n", 20);
+		write(1, "\n", 1);
 		g_signal = signo;
 	}
 }
 
-void	init_signal(void)
+void	init_signal_prompt(void)
 {
-	signal(SIGINT, sigint_handler);
-	signal(SIGQUIT, sigquit_handler);
+	signal(SIGINT, sigint_prompt_handler);
+	signal(SIGQUIT, SIG_IGN);
+}
+
+void	init_signal_exec(void)
+{
+	signal(SIGINT, sigint_exec_handler);
+	signal(SIGQUIT, SIG_IGN);
 }

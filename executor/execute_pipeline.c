@@ -64,9 +64,21 @@ int	execute_pipeline(t_shell *shell, t_ast *ast)
 	close_pipe(pipe_fd);
 	left_status = 0;
 	right_status = 0;
-	waitpid(left_pid, &left_status, 0);
-	waitpid(right_pid, &right_status, 0);
+	init_signal_exec();
+	while (waitpid(left_pid, &left_status, 0) < 0)
+	{
+		if (errno != EINTR)
+			return (init_signal_prompt(), perror("waitpid"), 1);
+	}
+	while (waitpid(right_pid, &right_status, 0) < 0)
+	{
+		if (errno != EINTR)
+			return (init_signal_prompt(), perror("waitpid"), 1);
+	}
+	init_signal_prompt();
 	if (WIFEXITED(right_status))
 		return (WEXITSTATUS(right_status));
+	if (WIFSIGNALED(right_status))
+		return (128 + WTERMSIG(right_status));
 	return (1);
 }

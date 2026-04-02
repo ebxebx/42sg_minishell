@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 12:30:09 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/02 13:49:25 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/02 21:52:57 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,6 @@ int	main(int argc, char **argv, char **env)
 
     init_shell(&shell, env);
     shell.debug = argc > 1 && strcmp(argv[1], "debug") == 0;
-    init_signal();
     if (shell.debug)
         fprintf(stderr, "!Debug mode enabled\n");
     // Main loop
@@ -31,11 +30,18 @@ int	main(int argc, char **argv, char **env)
         char *prompt = build_prompt(shell.status);
         if (!prompt)
             prompt = strdup("minishell> ");
+        init_signal_prompt();
         cmd = readline(prompt);
         free(prompt);
         if (!cmd)
             break ;
-        add_history(cmd);
+        if (g_signal == SIGINT)
+        {
+            shell.status = 130;
+            g_signal = 0;
+        }
+        if (cmd[0] != '\0')
+            add_history(cmd);
         exec_command(&shell, cmd);
         free(cmd);
     }
