@@ -1,31 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell_init.c                                   :+:      :+:    :+:   */
+/*   minishell_prompt.h                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2026/03/02 12:30:09 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/02 13:03:45 by zchoo            ###   ########.fr       */
+/*   Created: 2026/04/02 13:49:48 by zchoo             #+#    #+#             */
+/*   Updated: 2026/04/02 13:49:50 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
-#include "env/env.h"
-#include "libft/libft.h"
+#ifndef MINISHELL_PROMPT_H
+# define MINISHELL_PROMPT_H
 
-void	init_shell(t_shell *shell, char **env)
-{
-	shell->debug = 0;
-	shell->status = 0;
-	shell->env = dup_env(env);
-	shell->export = dup_env(env);
-	if (!shell->env || !shell->export)
-		exit(EXIT_FAILURE);
-}
+char	*build_prompt(int status);
 
-void	free_shell(t_shell *shell)
-{
-	ft_strarr_free(shell->env);
-	ft_strarr_free(shell->export);
-}
+#endif

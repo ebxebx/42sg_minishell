@@ -1,12 +1,7 @@
 NAME      = minishell
 
 TEST_CMD  = ./$(NAME) "debug"
-TEST_EXPORT = cc -Wall -Werror -Wextra \
- 	env/env_modify_entry.c env/env_modify_env+export.c env/env_utils.c \
-	builtin/builtin_export.c builtin/builtin_env.c \
-	minishell_init.c \
-	libft/libft.a -I. -I./libft \
-	-o test_export.out
+TEST1_CMD  = ./$(NAME)
 
 LIBFT_DIR = ./libft
 LIBFT     = $(LIBFT_DIR)/libft.a
@@ -15,17 +10,14 @@ LIBFT_MAKE = $(MAKE) -C $(LIBFT_DIR) PRINTF_FLOAT=$(PRINTF_FLOAT)
 
 SRCS =	minishell.c minishell_init.c minishell_exec_command.c \
 		env/env_modify_entry.c env/env_modify_env+export.c env/env_utils.c \
-			parsing/tokenize.c parsing/ast.c \
-			executor/execute_ast.c executor/execute_command_node.c \
-			executor/execute_pipeline.c executor/redirection.c \
-			builtin/builtin_echo.c \
-		builtin/builtin_env.c \
-		builtin/builtin_pwd.c \
-		builtin/builtin_export.c \
-		builtin/builtin_unset.c \
-		builtin/builtin_cd.c \
+		parsing/tokenize.c parsing/ast.c \
+		executor/execute_ast.c executor/execute_command_node.c \
+		executor/execute_pipeline.c executor/redirection.c \
+		builtin/builtin_echo.c builtin/builtin_env.c builtin/builtin_pwd.c \
+		builtin/builtin_export.c builtin/builtin_unset.c builtin/builtin_cd.c \
 		builtin/builtin_exit.c \
 		minishell_signal.c \
+		minishell_prompt.c \
 		minishell_debug.c
 OBJS = $(SRCS:.c=.o)
 
@@ -51,11 +43,10 @@ all: $(NAME)
 test: $(NAME)
 	$(TEST_CMD)
 
-test_export:
-	$(TEST_EXPORT)
-	./test_export.out export a=5
+test1: $(NAME)
+	$(TEST1_CMD)
 
-test2: $(NAME)
+testv: $(NAME)
 	valgrind --leak-check=full $(TEST_CMD)
 
 $(NAME): $(OBJS) $(LIBFT)
