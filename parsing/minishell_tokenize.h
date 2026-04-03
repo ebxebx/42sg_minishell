@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_tokenize.h                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
+/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 16:09:09 by zchoo             #+#    #+#             */
-/*   Updated: 2026/03/31 15:54:31 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/04/03 15:09:25 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,16 +20,16 @@
 
 typedef enum e_token_type
 {
-	TOKEN_WORD,
-	TOKEN_PIPE,
-	TOKEN_REDIRECT_IN,
-	TOKEN_REDIRECT_OUT,
-	TOKEN_REDIRECT_HEREDOC,
-	TOKEN_REDIRECT_APPEND,
-	TOKEN_PARANTHESIS_OPEN,
-	TOKEN_PARANTHESIS_CLOSE,
-	TOKEN_AND,
-	TOKEN_OR,
+	TOK_WORD,
+	TOK_PIPE,
+	TOK_RDIR_IN,
+	TOK_RDIR_OUT,
+	TOK_RDIR_HEREDOC,
+	TOK_RDIR_APPEND,
+	TOK_BRAC_OPEN,
+	TOK_BRAC_CLOSE,
+	TOK_AND,
+	TOK_OR,
 	// Add other token types
 }					t_token_type;
 

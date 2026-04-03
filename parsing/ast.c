@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   ast.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
+/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 17:53:44 by zchoo             #+#    #+#             */
-/*   Updated: 2026/03/31 15:55:03 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/04/03 15:13:15 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "ast.h"
 #include "../libft/libft.h"
+#include "ast.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -40,7 +40,7 @@ static int	append_redir(t_ast *ast, t_token_type type, const char *file)
 	if (!new_redir)
 		return (1);
 	new_redir->type = type;
-	new_redir->file = strdup(file);
+	new_redir->file = ft_strdup(file);
 	new_redir->next = NULL;
 	if (!new_redir->file)
 		return (free(new_redir), 1);
@@ -59,49 +59,50 @@ static int	append_redir(t_ast *ast, t_token_type type, const char *file)
 // Function to create a new AST node
 t_ast	*create_node(char *value)
 {
-    t_ast	*new_node;
+	t_ast	*new_node;
 
-    new_node = (t_ast *)malloc(sizeof(t_ast));
-    if (!new_node)
-        return (NULL);
-    new_node->value = value ? strdup(value) : strdup("");
-    new_node->left = NULL;
-    new_node->right = NULL;
-    new_node->redirs = NULL;
-    return (new_node);
+	new_node = (t_ast *)malloc(sizeof(t_ast));
+	if (!new_node)
+		return (NULL);
+	if (value)
+		value = ft_strdup(value);
+	else
+		value = ft_strdup("");
+	new_node->value = value;
+	new_node->left = NULL;
+	new_node->right = NULL;
+	new_node->redirs = NULL;
+	return (new_node);
 }
 
 // Function to free the AST
 void	free_ast(t_ast *node)
 {
-    if (node)
-    {
-        free_ast(node->left);
-        free_ast(node->right);
-        free_redirs(node->redirs);
-        free(node->value);
-        free(node);
-    }
+	if (node)
+	{
+		free_ast(node->left);
+		free_ast(node->right);
+		free_redirs(node->redirs);
+		free(node->value);
+		free(node);
+	}
 }
 
 // Function to check if a token is an operator
 int	is_operator(char *token)
 {
-    if (!token)
-        return (0);
-    return (strcmp(token, "|") == 0
-        || strcmp(token, ">") == 0
-        || strcmp(token, "<") == 0
-        || strcmp(token, ">>") == 0
-        || strcmp(token, "<<") == 0
-        || strcmp(token, "||") == 0
-        || strcmp(token, "&&") == 0);
+	if (!token)
+		return (0);
+	return (ft_strcmp(token, "|") == 0 || ft_strcmp(token, ">") == 0
+		|| ft_strcmp(token, "<") == 0 || ft_strcmp(token, ">>") == 0
+		|| ft_strcmp(token, "<<") == 0 || ft_strcmp(token, "||") == 0
+		|| ft_strcmp(token, "&&") == 0);
 }
 
 static int	is_redirection_type(t_token_type type)
 {
-	return (type == TOKEN_REDIRECT_IN || type == TOKEN_REDIRECT_OUT
-		|| type == TOKEN_REDIRECT_HEREDOC || type == TOKEN_REDIRECT_APPEND);
+	return (type == TOK_RDIR_IN || type == TOK_RDIR_OUT
+		|| type == TOK_RDIR_HEREDOC || type == TOK_RDIR_APPEND);
 }
 
 /*
@@ -113,30 +114,32 @@ This function consumes tokens by advancing *tokens to the next unconsumed token.
 */
 t_ast	*parse_cmd(t_token **tokens)
 {
-    t_token	*p;
-    t_ast	*ast;
-    char	*cmd_buf = NULL;
-    size_t	buf_len = 0;
+	t_token	*p;
+	t_ast	*ast;
+	char	*cmd_buf;
+	size_t	buf_len;
 	size_t	vlen;
 	char	*new_buf;
 
-    if (!tokens || !*tokens)
-        return (NULL);
-    p = *tokens;
+	cmd_buf = NULL;
+	buf_len = 0;
+	if (!tokens || !*tokens)
+		return (NULL);
+	p = *tokens;
 	ast = create_node("");
 	if (!ast)
 		return (NULL);
-    while (p && strcmp(p->value, "|") != 0 
-		/*&& strcmp(p->value, "(") != 0
-		&& strcmp(p->value, ")") != 0 
-		&& strcmp(p->value, "&&") != 0
-		&& strcmp(p->value, "||") != 0*/)
+	while (p && ft_strcmp(p->value, "|") != 0 
+		/*&& ft_strcmp(p->value, "(") != 0
+		&& ft_strcmp(p->value, ")") != 0 
+		&& ft_strcmp(p->value, "&&") != 0
+		&& ft_strcmp(p->value, "||") != 0*/)
 	{
 		// Ether word or redirection
 		if (is_redirection_type(p->type))
 		{
-			if (!p->next || p->next->type != TOKEN_WORD
-				|| append_redir(ast, p->type, p->next->value))
+			if (!p->next || p->next->type != TOK_WORD || append_redir(ast,
+					p->type, p->next->value))
 			{
 				free(cmd_buf);
 				free_ast(ast);
@@ -145,7 +148,8 @@ t_ast	*parse_cmd(t_token **tokens)
 			p = p->next->next;
 			continue ;
 		}
-		vlen = strlen(p->value);
+		vlen = ft_strlen(p->value);
+		// TODO realloc need to change or create own function
 		new_buf = realloc(cmd_buf, buf_len + vlen + 2);
 		if (!new_buf)
 		{
@@ -155,92 +159,97 @@ t_ast	*parse_cmd(t_token **tokens)
 		}
 		cmd_buf = new_buf;
 		if (buf_len == 0)
-			memcpy(cmd_buf + buf_len, p->value, vlen);
+			ft_memcpy(cmd_buf + buf_len, p->value, vlen);
 		else
 		{
 			cmd_buf[buf_len] = ' ';
-			memcpy(cmd_buf + buf_len + 1, p->value, vlen);
+			ft_memcpy(cmd_buf + buf_len + 1, p->value, vlen);
 			vlen += 1;
 		}
 		buf_len += vlen;
 		cmd_buf[buf_len] = '\0';
 		p = p->next;
 	}
-
-    if (cmd_buf)
-    {
+	if (cmd_buf)
+	{
 		free(ast->value);
-		ast->value = strdup(cmd_buf);
-        free(cmd_buf);
+		ast->value = ft_strdup(cmd_buf);
+		free(cmd_buf);
 		if (!ast->value)
 			return (free_ast(ast), NULL);
 	}
-    *tokens = p;
-    return (ast);
+	*tokens = p;
+	return (ast);
 }
 
-t_ast *parse_pipeline(t_token *tokens)
+t_ast	*parse_pipeline(t_token *tokens)
 {
-    t_token *cur = tokens;
-    t_ast *left = parse_cmd(&cur);
-    if (!left)
-        return (NULL);
+	t_token	*cur;
+	t_ast	*left;
+	t_ast	*right;
+	t_ast	*node;
 
-    while (cur && strcmp(cur->value, "|") == 0)
-    {
-        // consume '|'
-        cur = cur->next;
-        // parse right-hand command (advances cur)
-        t_ast *right = parse_cmd(&cur);
-        t_ast *node = create_node("|");
-        node->left = left;
-        node->right = right;
-        left = node;
-    }
-    return (left);
+	cur = tokens;
+	left = parse_cmd(&cur);
+	if (!left)
+		return (NULL);
+	while (cur && ft_strcmp(cur->value, "|") == 0)
+	{
+		// consume '|'
+		cur = cur->next;
+		// parse right-hand command (advances cur)
+		right = parse_cmd(&cur);
+		node = create_node("|");
+		node->left = left;
+		node->right = right;
+		left = node;
+	}
+	return (left);
 }
 
 /* Recursive Function to Parse Tokens into AST */
+// TODO: add logical-operator and parenthesis parsing with proper precedence.
+// For now,	build pipelines (left-associative). Extend precedence handling later.
 t_ast	*parse_tokens_to_ast(t_token *tokens)
 {
-    // TODO: add logical-operator and parenthesis parsing with proper precedence.
-    // For now, build pipelines (left-associative). Extend precedence handling later.
-    if (!tokens)
-        return (NULL);
-    return (parse_pipeline(tokens));
+	if (!tokens)
+		return (NULL);
+	return (parse_pipeline(tokens));
 }
 
 /* Print AST (for debugging purposes) */
 void	print_ast(t_ast *node, int depth)
 {
 	t_redir	*redir;
+	int		i;
 
 	if (!node)
 		return ;
 	print_ast(node->right, depth + 1);
-	for (int i = 0; i < depth; i++)
-		printf("    ");
-	printf("%s", node->value);
+	i = 0;
+	while (i++ < depth)
+		ft_printf("    ");
+	ft_printf("%s", node->value);
 	redir = node->redirs;
 	if (redir)
-		printf(" [");
+		ft_printf(" [");
 	while (redir)
 	{
-		if (redir->type == TOKEN_REDIRECT_IN)
-			printf("< %s", redir->file);
-		else if (redir->type == TOKEN_REDIRECT_OUT)
-			printf("> %s", redir->file);
-		else if (redir->type == TOKEN_REDIRECT_APPEND)
-			printf(">> %s", redir->file);
-		else if (redir->type == TOKEN_REDIRECT_HEREDOC)
-			printf("<< %s", redir->file);
+		if (redir->type == TOK_RDIR_IN)
+			ft_printf("< %s", redir->file);
+		else if (redir->type == TOK_RDIR_OUT)
+			ft_printf("> %s", redir->file);
+		else if (redir->type == TOK_RDIR_APPEND)
+			ft_printf(">> %s", redir->file);
+		else if (redir->type == TOK_RDIR_HEREDOC)
+			ft_printf("<< %s", redir->file);
 		if (redir->next)
-			printf(", ");
+			ft_printf(", ");
 		redir = redir->next;
 	}
 	if (node->redirs)
-		printf("]");
-	printf("\n");
+		ft_printf("]");
+	ft_printf("\n");
 	print_ast(node->left, depth + 1);
 }
 
@@ -248,17 +257,18 @@ void	print_ast(t_ast *node, int depth)
 #ifdef TEST_AST_MAIN
 int	main(void)
 {
-    const char	*input = "echo 'Hello World' | grep Hello > output.txt | wc -l";
-    // const char	*input = "(echo 'Hello World' | grep Hello > output.txt) && (cat input.txt | sort | uniq)";
-    t_token		*tokens;
-    t_ast		*ast;
+	const char	*input = "echo 'Hello World' | grep Hello > output.txt | wc -l";
+	t_token		*tokens;
+	t_ast		*ast;
 
-    tokens = parse_token(input);
-    ast = parse_tokens_to_ast(tokens);
-	printf("AST:\n");
-    print_ast(ast, 0);
-    free_ast(ast);
-    return (0);
+	// const char	*input = "(echo 'Hello World' | grep Hello > output.txt)
+			&& (cat input.txt | sort | uniq)";
+	tokens = parse_token(input);
+	ast = parse_tokens_to_ast(tokens);
+	ft_printf("AST:\n");
+	print_ast(ast, 0);
+	free_ast(ast);
+	return (0);
 }
 #endif
 

@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 15:52:36 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/02 16:54:10 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/03 15:09:25 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,47 +94,47 @@ t_token	*parse_token(const char *input)
 
 		if (input[i] == '(')
 		{
-			token = create_token(input + i, 1, TOKEN_PARANTHESIS_OPEN);
+			token = create_token(input + i, 1, TOK_BRAC_OPEN);
 			i++;
 		}
 		else if (input[i] == ')')
 		{
-			token = create_token(input + i, 1, TOKEN_PARANTHESIS_CLOSE);
+			token = create_token(input + i, 1, TOK_BRAC_CLOSE);
 			i++;
 		}
 		else if (ft_strncmp(input + i, "||", 2) == 0)
 		{
-			token = create_token(input + i, 2, TOKEN_OR);
+			token = create_token(input + i, 2, TOK_OR);
 			i += 2;
 		}
 		else if (ft_strncmp(input + i, "&&", 2) == 0)
 		{
-			token = create_token(input + i, 2, TOKEN_AND);
+			token = create_token(input + i, 2, TOK_AND);
 			i += 2;
 		}
 		else if (ft_strncmp(input + i, "<<", 2) == 0)
 		{
-			token = create_token(input + i, 2, TOKEN_REDIRECT_HEREDOC);
+			token = create_token(input + i, 2, TOK_RDIR_HEREDOC);
 			i += 2;
 		}
 		else if (ft_strncmp(input + i, ">>", 2) == 0)
 		{
-			token = create_token(input + i, 2, TOKEN_REDIRECT_APPEND);
+			token = create_token(input + i, 2, TOK_RDIR_APPEND);
 			i += 2;
 		}
 		else if (input[i] == '|')
 		{
-			token = create_token(input + i, 1, TOKEN_PIPE);
+			token = create_token(input + i, 1, TOK_PIPE);
 			i++;
 		}
 		else if (input[i] == '>')
 		{
-			token = create_token(input + i, 1, TOKEN_REDIRECT_OUT);
+			token = create_token(input + i, 1, TOK_RDIR_OUT);
 			i++;
 		}
 		else if (input[i] == '<')
 		{
-			token = create_token(input + i, 1, TOKEN_REDIRECT_IN);
+			token = create_token(input + i, 1, TOK_RDIR_IN);
 			i++;
 		}
 		else
@@ -143,10 +143,10 @@ t_token	*parse_token(const char *input)
 			if (len == (size_t)-1)
 			{
 				// Handle unmatched quote error
-				printf("Error: Unmatched quote\n");
+				ft_printf("Error: Unmatched quote\n");
 				return (NULL);
 			}
-			token = create_token(input + i, len, TOKEN_WORD);
+			token = create_token(input + i, len, TOK_WORD);
 			i += len; // Move index to end of token
 		}
 

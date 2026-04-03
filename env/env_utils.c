@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_utils.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
+/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:37 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/03/31 16:30:21 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/04/03 14:47:07 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,7 +90,7 @@ int	is_valid_identifier(char *str)
 // 		perror("Error");
 // 		return (1);
 // 	}
-// 	printf("Is valid\n");
+// 	ft_printf("Is valid\n");
 // 	return (0);
 
 // }
