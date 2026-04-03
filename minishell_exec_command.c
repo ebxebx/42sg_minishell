@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_exec_command.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 12:30:09 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/02 12:55:32 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/04 00:36:00 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 #include "executor/executor.h"
 #include "parsing/ast.h"
 #include "parsing/minishell_tokenize.h"
+#include "expander/expand.h"
+
 
 void	exec_command(t_shell *shell, char *cmd)
 {
@@ -23,6 +25,12 @@ void	exec_command(t_shell *shell, char *cmd)
 	tokens = parse_token(cmd);
 	if (!tokens)
 		return ;
+	if (!expand_tokens(tokens, shell))
+	{
+		free_token_list(tokens);
+		shell->status = 1;
+		return ;
+	}
 	ast = parse_tokens_to_ast(tokens);
 	if (!ast)
 	{

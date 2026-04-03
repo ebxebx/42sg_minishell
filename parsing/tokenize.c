@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   tokenize.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 15:52:36 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/03 15:09:25 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/04 00:15:57 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,6 +45,12 @@ static int is_operator(char *token)
 	return (0);
 }
 
+static int	ft_isspace(char c)
+{
+	return (c == ' ' || c == '\f' || c == '\n' || c == '\r' || c == '\t'
+		|| c == '\v');
+}
+
 size_t token_len(const char *input, size_t start)
 {
 	size_t	len = 0;
@@ -53,14 +59,17 @@ size_t token_len(const char *input, size_t start)
 
 	while (input[start + len])
 	{
-		if (input[start + len] == '\'')
-			single_quote = !single_quote;
-		else if (input[start + len] == '\"')
+		// KS: Quote handling only happen when not alrd inside the other quote type
+		if (input[start + len] == '\'' && double_quote == 0)
+				single_quote = !single_quote;
+		else if (input[start + len] == '\"' && single_quote == 0)
 			double_quote = !double_quote;
 
-		if (!single_quote && !double_quote && isspace(input[start + len]))
+		if (!single_quote && !double_quote && ft_isspace(input[start + len]))
 			break;
-		if (is_operator((char *)&input[start + len]))
+		// KS: need to check for operator only when not inside any quote, otherwise it will break tokenization of something like "echo '|'"
+		if (!single_quote && !double_quote
+			&& is_operator((char *)&input[start + len]))
 			break;
 		len++;
 	}
@@ -86,7 +95,7 @@ t_token	*parse_token(const char *input)
 		return (NULL);
 	while (input[i])
 	{
-		if (isspace(input[i]))
+		if (ft_isspace(input[i]))
 		{
 			i++;
 			continue;
@@ -144,6 +153,7 @@ t_token	*parse_token(const char *input)
 			{
 				// Handle unmatched quote error
 				ft_printf("Error: Unmatched quote\n");
+				free_token_list(first_token);
 				return (NULL);
 			}
 			token = create_token(input + i, len, TOK_WORD);
