@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:34:21 by zchoo             #+#    #+#             */
-/*   Updated: 2026/03/30 19:00:03 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/03 16:34:12 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,11 +17,13 @@
 # include "../parsing/ast.h"
 # include <fcntl.h>
 
-int	execute_ast(t_shell *shell, t_ast *ast);
+# define HERE_DOC_TMP ".abc_here_doc_xyz"
+
+int		execute_ast(t_shell *shell, t_ast *ast);
 void	execute_ast_child(t_shell *shell, t_ast *ast);
-int	execute_command_node(t_shell *shell, t_ast *cmd);
-int	execute_pipeline(t_shell *shell, t_ast *ast);
+int		execute_command_node(t_shell *shell, t_ast *cmd);
+int		execute_pipeline(t_shell *shell, t_ast *ast);
 void	execute_command_child(t_shell *shell, t_ast *cmd);
-int	apply_redirections(t_ast *cmd);
+int		apply_redirections(t_ast *cmd);
 
 #endif

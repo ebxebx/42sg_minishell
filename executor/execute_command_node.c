@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 00:00:00 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/02 15:58:58 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/03 20:14:29 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -153,6 +153,18 @@ void	execute_command_child(t_shell *shell, t_ast *cmd)
 	int		status;
 	char	**argv;
 
+	ft_printf("Executing command child: %p\n", cmd);
+	if (!shell || !cmd)
+		exit(1);
+	signal(SIGINT, SIG_DFL);
+	signal(SIGQUIT, SIG_DFL);
+	// redirection only
+	if (cmd->redirs && (!cmd->value || !cmd->value[0]))
+	{
+		if (apply_redirections(cmd))
+			exit(1);
+		exit(0);
+	}
 	if (!shell || !cmd || !cmd->value || !cmd->value[0])
 		exit(1);
 	argv = build_argv(cmd->value);
@@ -169,8 +181,6 @@ void	execute_command_child(t_shell *shell, t_ast *cmd)
 		ft_strarr_free(argv);
 		exit(status);
 	}
-	signal(SIGINT, SIG_DFL);
-	signal(SIGQUIT, SIG_DFL);
 	status = exec_with_path(argv, shell->env);
 	if (status == 127)
 		ft_dprintf(2, "%s: command not found\n", argv[0]);
@@ -185,7 +195,9 @@ int	execute_command_node(t_shell *shell, t_ast *cmd)
 	pid_t	pid;
 	int		status;
 
-	if (!shell || !cmd || !cmd->value || !cmd->value[0])
+	if (!shell || !cmd
+		//  || !cmd->value || !cmd->value[0]
+		)
 		return (1);
 	pid = fork();
 	if (pid < 0)
