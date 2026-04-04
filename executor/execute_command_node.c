@@ -6,13 +6,16 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 00:00:00 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/04 16:10:51 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/04 20:50:11 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include "../builtin/builtin.h"
 #include "../parsing/minishell_tokenize.h"
+
+#include <sys/types.h>
+#include <sys/stat.h>
 
 static int	is_builtin_command(char *cmd)
 {
@@ -64,6 +67,17 @@ static char	*get_env_value(char **env, char *key)
 	return (NULL);
 }
 
+/* static int	is_directory(const char *path)
+{
+	struct stat	statbuf;
+
+	if (!path)
+		return (0);
+	if (stat(path, &statbuf) == 0)
+		return (S_ISDIR(statbuf.st_mode));
+	return (0);
+} */
+
 static int	exec_with_path(char **argv, char **env)
 {
 	char	**paths;
@@ -71,12 +85,23 @@ static int	exec_with_path(char **argv, char **env)
 	char	*tmp;
 	char	*full;
 	int		i;
+	int		has_slash;
 
-	if (ft_strchr(argv[0], '/'))
+	struct stat	st;
+
+	has_slash = (ft_strchr(argv[0], '/') != NULL);
+	if (has_slash)
+	{
+		if (stat(argv[0], &st) == -1)
+			return (127);
+		if (S_ISDIR(st.st_mode))
+			return (ft_dprintf(2, "%s: is a directory\n", argv[0]), 126);
 		execve(argv[0], argv, env);
+		return (126);
+	}
 	path_env = get_env_value(env, "PATH");
 	if (!path_env)
-		return (execve(argv[0], argv, env), 127);
+		return (127);
 	paths = ft_split(path_env, ':');
 	if (!paths)
 		return (127);
@@ -114,10 +139,13 @@ void	execute_command_child(t_shell *shell, t_ast *cmd)
 			exit(1);
 		exit(0);
 	}
-	if (!shell || !cmd || !cmd->value || !cmd->value[0])
+	// empty command
+	if (!cmd->value[0])
+		exit(0);
+	if (!shell || !cmd || !cmd->value)
 		exit(1);
 	argv = build_argv(cmd->value);
-	if (!argv || !argv[0])
+	if (!argv)
 		exit(1);
 	if (apply_redirections(cmd))
 	{
