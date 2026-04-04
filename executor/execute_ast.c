@@ -6,65 +6,13 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 00:00:00 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/04 15:12:59 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/04 15:30:09 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include "../builtin/builtin.h"
 #include "../parsing/minishell_tokenize.h"
-
-/* static char	*strip_quotes(const char *value)
-{
-	size_t	i;
-	size_t	j;
-	char	*out;
-
-	out = malloc(ft_strlen(value) + 1);
-	if (!out)
-		return (NULL);
-	i = 0;
-	j = 0;
-	while (value[i])
-	{
-		if (value[i] != '\'' && value[i] != '"')
-			out[j++] = value[i];
-		i++;
-	}
-	out[j] = '\0';
-	return (out);
-} */
-
-static char	**build_argv(char *cmdline)
-{
-	t_token	*tokens;
-	t_token	*cur;
-	char	**argv;
-	size_t	count;
-	size_t	i;
-
-	tokens = parse_token(cmdline);
-	if (!tokens)
-		return (NULL);
-	count = 0;
-	cur = tokens;
-	while (cur && ++count)
-		cur = cur->next;
-	argv = ft_calloc(count + 1, sizeof(char *));
-	if (!argv)
-		return (free_token_list(tokens), NULL);
-	cur = tokens;
-	i = 0;
-	while (cur)
-	{
-		argv[i] = ft_strdup(cur->value);
-		if (!argv[i++])
-			return (free_token_list(tokens), ft_strarr_free(argv), NULL);
-		cur = cur->next;
-	}
-	free_token_list(tokens);
-	return (argv);
-}
 
 static int	is_parent_builtin(char *cmd)
 {

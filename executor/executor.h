@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:34:21 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/03 16:34:12 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/04 15:31:00 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,5 +25,9 @@ int		execute_command_node(t_shell *shell, t_ast *cmd);
 int		execute_pipeline(t_shell *shell, t_ast *ast);
 void	execute_command_child(t_shell *shell, t_ast *cmd);
 int		apply_redirections(t_ast *cmd);
+
+// utils...
+char	*strip_quotes(const char *value);
+char	**build_argv(char *cmdline);
 
 #endif

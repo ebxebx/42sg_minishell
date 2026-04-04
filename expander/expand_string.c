@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_string.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
+/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:26 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/04/04 13:30:51 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/04/04 15:24:25 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ char	*expand_string(char *src, t_shell *shell)
 	{
 		if ((src[i] == '\'' && dquot == 0) || (src[i] == '"' && squot == 0))
 			update_quote_stat(src[i], &squot, &dquot);
-		else if (src[i] == '$' && squot == 0)
+		if (src[i] == '$' && squot == 0)
 		{
 			if (handle_expansion(src, &i, shell, &res) == 0)
 				return (free(res), NULL);

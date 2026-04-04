@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 12:35:04 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/02 12:52:09 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/04 15:37:34 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,12 +18,12 @@
 # include <readline/history.h>
 # include <readline/readline.h>
 # include <signal.h>
-# include <stdio.h>
-# include <stdlib.h>
-# include <string.h>
-# include <sys/types.h>
+// # include <stdio.h>
+// # include <stdlib.h>
+// # include <string.h>
+// # include <sys/types.h>
 # include <sys/wait.h>
-# include <unistd.h>
+// # include <unistd.h>
 
 typedef struct s_shell
 {

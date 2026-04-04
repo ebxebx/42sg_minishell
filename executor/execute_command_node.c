@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 00:00:00 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/04 15:13:09 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/04 16:10:51 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,58 +46,6 @@ static int	run_builtin(t_shell *shell, char **argv)
 	if (!ft_strcmp(argv[0], "pwd"))
 		return (builtin_pwd(shell));
 	return (1);
-}
-
-/* static char	*strip_quotes(const char *value)
-{
-	size_t	i;
-	size_t	j;
-	char	*out;
-
-	out = malloc(ft_strlen(value) + 1);
-	if (!out)
-		return (NULL);
-	i = 0;
-	j = 0;
-	while (value[i])
-	{
-		if (value[i] != '\'' && value[i] != '"')
-			out[j++] = value[i];
-		i++;
-	}
-	out[j] = '\0';
-	return (out);
-} */
-
-static char	**build_argv(char *cmdline)
-{
-	t_token	*tokens;
-	t_token	*cur;
-	char	**argv;
-	size_t	count;
-	size_t	i;
-
-	tokens = parse_token(cmdline);
-	if (!tokens)
-		return (NULL);
-	count = 0;
-	cur = tokens;
-	while (cur && ++count)
-		cur = cur->next;
-	argv = ft_calloc(count + 1, sizeof(char *));
-	if (!argv)
-		return (free_token_list(tokens), NULL);
-	cur = tokens;
-	i = 0;
-	while (cur)
-	{
-		argv[i] = ft_strdup(cur->value);
-		if (!argv[i++])
-			return (free_token_list(tokens), ft_strarr_free(argv), NULL);
-		cur = cur->next;
-	}
-	free_token_list(tokens);
-	return (argv);
 }
 
 static char	*get_env_value(char **env, char *key)
@@ -153,7 +101,8 @@ void	execute_command_child(t_shell *shell, t_ast *cmd)
 	int		status;
 	char	**argv;
 
-	ft_printf("Executing command child: %p\n", cmd);
+	if (shell->debug)
+		ft_printf("Executing command child: %p\n", cmd);
 	if (!shell || !cmd)
 		exit(1);
 	signal(SIGINT, SIG_DFL);
