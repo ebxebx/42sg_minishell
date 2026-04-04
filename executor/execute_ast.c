@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_ast.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 00:00:00 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/04 15:30:09 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/04 21:25:41 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ static int	execute_parent_builtin(t_shell *shell, char **argv)
 	if (!ft_strcmp(argv[0], "cd"))
 		return (builtin_cd(argv));
 	if (!ft_strcmp(argv[0], "exit"))
-		return (builtin_exit(shell));
+		return (builtin_exit(shell, argv));
 	return (1);
 }
 

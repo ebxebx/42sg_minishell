@@ -6,15 +6,60 @@
 /*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:37 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/03/31 14:56:53 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/04/04 21:28:13 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtin.h"
 
-int	builtin_exit(t_shell *shell)
+int	mod_exit_code(long long n)
 {
+	int	code;
+
+	code = n % 256;
+	if (code < n)
+		code = code + 256;
+	return (code);
+}
+
+static void	exit_numeric_error(char *arg)
+{
+	ft_putstr_fd("minishell: exit: ", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putendl_fd(": numeric argument required", 2);
+}
+
+static void	exit_too_many_args_error(char *arg)
+{
+	ft_putstr_fd("minishell: exit: ", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putendl_fd(": too many arguments", 2);
+}
+
+//fd=1 can be redirected to another file, stderr=2
+//can be used to store shell diagnostic msg
+int	builtin_exit(t_shell *shell, char **argv)
+{
+	long long	n;
+
 	ft_putendl_fd("exit", 1);
+	if (!argv[1])
+	{
+		free_shell(shell);
+		exit(shell->status);
+	}
+	if (!ft_atoll_exit(argv[1], &n))
+	{
+		exit_numeric_error(argv[1]);
+		free_shell(shell);
+		exit(2);
+	}
+	if (argv[2])
+	{
+		exit_too_many_args_error(argv[1]);
+		shell->status = 1;
+		return (1);
+	}
 	free_shell(shell);
-	exit(shell->status);
+	exit(mod_exit_code(n));
 }

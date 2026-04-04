@@ -6,7 +6,7 @@
 /*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:37 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/03/30 18:10:44 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/04/04 21:18:15 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ int	builtin_env(t_shell *shell, char **argv)
 
 	if (argv[1])
 	{
-		ft_putendl_fd("env: too many arguments", 2);
+		ft_putendl_fd("minishell: env: too many arguments", 2);
 		return (1);
 	}
 	i = 0;

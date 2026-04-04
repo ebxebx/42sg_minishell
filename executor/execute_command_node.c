@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_command_node.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 00:00:00 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/04 20:50:11 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/04 22:03:43 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,7 +45,7 @@ static int	run_builtin(t_shell *shell, char **argv)
 	if (!ft_strcmp(argv[0], "unset"))
 		return (builtin_unset(shell, argv));
 	if (!ft_strcmp(argv[0], "exit"))
-		return (builtin_exit(shell));
+		return (builtin_exit(shell, argv));
 	if (!ft_strcmp(argv[0], "pwd"))
 		return (builtin_pwd(shell));
 	return (1);
