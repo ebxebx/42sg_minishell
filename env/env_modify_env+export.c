@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env_modify_env+export.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:37 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/04/03 14:47:07 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/04 22:29:05 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,6 @@ int	assign_export(t_shell *shell, char *str)
 	char	**new_export;
 	char	**new_env;
 
-	// ft_printf("export index = %d\n", env_index(shell->export, str));
-	// ft_printf("env index = %d\n", env_index(shell->env, str));
 	new_env = update_or_add(shell->env, str);
 	if (!new_env)
 		return (1);
@@ -57,11 +55,6 @@ int	assign_export(t_shell *shell, char *str)
 	if (!new_export)
 		return (1);
 	shell->export = new_export;
-	// print_export(new_export);
-	// print_export(shell->export);
-	// ft_printf("arg = [%s]\n", str);
-	// ft_printf("export index = %d\n", env_index(shell->export, str));
-	// ft_printf("env index = %d\n", env_index(shell->env, str));
 	return (0);
 }
 //duplicate env variables from OS

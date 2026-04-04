@@ -6,7 +6,7 @@
 /*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:37 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/03/31 16:20:17 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/04/04 22:29:16 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,7 +50,6 @@ char	**replace_env_entry(char **env, int index, char *new_entry)
 		return (NULL);
 	free(env[index]);
 	env[index] = copy;
-	free(copy);
 	return (env);
 }
 
