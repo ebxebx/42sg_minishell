@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 00:00:00 by zchoo             #+#    #+#             */
-/*   Updated: 2026/03/31 16:53:50 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/04 15:12:59 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "../builtin/builtin.h"
 #include "../parsing/minishell_tokenize.h"
 
-static char	*strip_quotes(const char *value)
+/* static char	*strip_quotes(const char *value)
 {
 	size_t	i;
 	size_t	j;
@@ -33,7 +33,7 @@ static char	*strip_quotes(const char *value)
 	}
 	out[j] = '\0';
 	return (out);
-}
+} */
 
 static char	**build_argv(char *cmdline)
 {
@@ -57,7 +57,7 @@ static char	**build_argv(char *cmdline)
 	i = 0;
 	while (cur)
 	{
-		argv[i] = strip_quotes(cur->value);
+		argv[i] = ft_strdup(cur->value);
 		if (!argv[i++])
 			return (free_token_list(tokens), ft_strarr_free(argv), NULL);
 		cur = cur->next;
