@@ -67,16 +67,33 @@ static char	*get_env_value(char **env, char *key)
 	return (NULL);
 }
 
-/* static int	is_directory(const char *path)
+static int	exec_sh_fallback(char *script, char **argv, char **env)
 {
-	struct stat	statbuf;
+	size_t	i;
+	size_t	argc;
+	char	**sh_argv;
 
-	if (!path)
-		return (0);
-	if (stat(path, &statbuf) == 0)
-		return (S_ISDIR(statbuf.st_mode));
-	return (0);
-} */
+	argc = 0;
+	while (argv[argc])
+		argc++;
+	sh_argv = malloc(sizeof(char *) * (argc + 2));
+	if (!sh_argv)
+		return (126);
+	sh_argv[0] = "/bin/sh";
+	sh_argv[1] = script;
+	i = 1;
+	while (i < argc)
+	{
+		sh_argv[i + 1] = argv[i];
+		i++;
+	}
+	sh_argv[argc + 1] = NULL;
+	execve("/bin/sh", sh_argv, env);
+	free(sh_argv);
+	if (errno == ENOENT)
+		return (127);
+	return (126);
+}
 
 static int	exec_with_path(char **argv, char **env)
 {
@@ -86,6 +103,7 @@ static int	exec_with_path(char **argv, char **env)
 	char	*full;
 	int		i;
 	int		has_slash;
+	int		saw_eacces;
 
 	struct stat	st;
 
@@ -93,19 +111,34 @@ static int	exec_with_path(char **argv, char **env)
 	if (has_slash)
 	{
 		if (stat(argv[0], &st) == -1)
-			return (127);
+		{
+			if (errno == ENOENT)
+				return (127);
+			return (126);
+		}
 		if (S_ISDIR(st.st_mode))
-			return (ft_dprintf(2, "%s: is a directory\n", argv[0]), 126);
+		{
+			errno = EISDIR;
+			return (126);
+		}
 		execve(argv[0], argv, env);
+		if (errno == ENOEXEC)
+			return (exec_sh_fallback(argv[0], argv, env));
+		if (errno == ENOENT)
+			return (127);
 		return (126);
 	}
 	path_env = get_env_value(env, "PATH");
 	if (!path_env)
+	{
+		errno = ENOENT;
 		return (127);
+	}
 	paths = ft_split(path_env, ':');
 	if (!paths)
 		return (127);
 	i = -1;
+	saw_eacces = 0;
 	while (paths[++i])
 	{
 		tmp = ft_strjoin(paths[i], "/");
@@ -114,10 +147,24 @@ static int	exec_with_path(char **argv, char **env)
 			full = ft_strjoin(tmp, argv[0]);
 		free(tmp);
 		if (full)
+		{
 			execve(full, argv, env);
+			if (errno == ENOEXEC)
+			{
+				i = exec_sh_fallback(full, argv, env);
+				free(full);
+				ft_strarr_free(paths);
+				return (i);
+			}
+			if (errno == EACCES)
+				saw_eacces = 1;
+		}
 		free(full);
 	}
 	ft_strarr_free(paths);
+	if (saw_eacces)
+		return (errno = EACCES, 126);
+	errno = ENOENT;
 	return (127);
 }
 
@@ -159,9 +206,9 @@ void	execute_command_child(t_shell *shell, t_ast *cmd)
 		exit(status);
 	}
 	status = exec_with_path(argv, shell->env);
-	if (status == 127)
+	if (status == 127 && !ft_strchr(argv[0], '/'))
 		ft_dprintf(2, "%s: command not found\n", argv[0]);
-	else if (errno)
+	else if (status != 0 && errno)
 		perror(argv[0]);
 	ft_strarr_free(argv);
 	exit(status);
