@@ -6,13 +6,13 @@
 /*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:26 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/04/04 00:27:11 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/04/04 13:31:29 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "expand.h"
 
-int		expand_tokens(t_token *tokens, t_shell *shell)
+int	expand_tokens(t_token *tokens, t_shell *shell)
 {
 	char	*expanded;
 	int		ok;

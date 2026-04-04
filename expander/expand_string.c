@@ -6,21 +6,22 @@
 /*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:26 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/04/04 00:28:09 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/04/04 13:30:51 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "expand.h"
 
 //scans left to right, and quote state can change as it goes.
-static void update_quote_stat(char c, int *in_squote, int *in_dquote)
+void	update_quote_stat(char c, int *in_squote, int *in_dquote)
 {
 	if (c == '\'' && *in_dquote == 0)
 		*in_squote = !(*in_squote);
 	else if (c == '"' && *in_squote == 0)
 		*in_dquote = !(*in_dquote);
 }
-static int copy_str(char **res, char *add)
+
+int	copy_str(char **res, char *add)
 {
 	char	*new_str;
 	int		j;
@@ -47,13 +48,13 @@ static int copy_str(char **res, char *add)
 }
 
 // null terminate so that can reuse copy_str
-static int	copy_char(char **res, char c)
+int	copy_char(char **res, char c)
 {
 	char	tmp[2];
-	
+
 	tmp[0] = c;
 	tmp[1] = '\0';
-	return(copy_str(res, tmp));
+	return (copy_str(res, tmp));
 }
 
 int	handle_expansion(char *src, int *i, t_shell *shell, char **res)
@@ -68,12 +69,12 @@ int	handle_expansion(char *src, int *i, t_shell *shell, char **res)
 	return (expand_env_var(src, i, shell, res));
 }
 
-char *expand_string(char *src, t_shell *shell)
+char	*expand_string(char *src, t_shell *shell)
 {
-	int i;
-	int squot;
-	int dquot;
-	char *res;
+	int		i;
+	int		squot;
+	int		dquot;
+	char	*res;
 
 	i = 0;
 	squot = 0;
