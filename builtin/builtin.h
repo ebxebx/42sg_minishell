@@ -6,7 +6,7 @@
 /*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 12:35:04 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/04 21:24:46 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/04/04 23:12:53 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,9 @@
 
 # include "../minishell.h"
 # include "../env/env.h"
+# include "../libft/libft.h"
+# include "../expander/expand.h"
+# include <sys/stat.h>
 
 // Builtins
 int	builtin_echo(char **argv);
