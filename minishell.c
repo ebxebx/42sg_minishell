@@ -6,47 +6,49 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 12:30:09 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/04 15:35:31 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/04 16:43:57 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "minishell_prompt.h"
 #include "parsing/ast.h"
 #include "parsing/minishell_tokenize.h"
-#include "minishell_prompt.h"
 
 int	main(int argc, char **argv, char **env)
 {
-    t_shell	shell;
-    char	*cmd;
+	t_shell	shell;
+	char	*cmd;
+	char	*prompt;
 
-    init_shell(&shell, env);
-    shell.debug = argc > 1 && ft_strcmp(argv[1], "debug") == 0;
-    if (shell.debug)
-        ft_printf("!Debug mode enabled\n");
-    // Main loop
-    while (1)
-    {
-        char *prompt = build_prompt(shell.status);
-        if (!prompt)
-            prompt = ft_strdup("minishell> ");
-        init_signal_prompt();
-        cmd = readline(prompt);
-        free(prompt);
-        if (!cmd)
-            break ;
-        if (g_signal == SIGINT)
-        {
-            shell.status = 130;
-            g_signal = 0;
-        }
-        if (cmd[0] != '\0')
-            add_history(cmd);
-        exec_command(&shell, cmd);
-        free(cmd);
-    }
-    free_shell(&shell);
-    return (0);
+	init_shell(&shell, env);
+	shell.debug = argc > 1 && ft_strcmp(argv[1], "debug") == 0;
+	if (shell.debug)
+		ft_printf("!!!Debug mode enabled\n");
+	// Main loop
+	while (1)
+	{
+		if (shell.debug)
+			prompt = build_prompt(shell.status);
+		if (!shell.debug || !prompt)
+			prompt = ft_strdup("minishell> ");
+		init_signal_prompt();
+		cmd = readline(prompt);
+		free(prompt);
+		if (!cmd)
+			break ;
+		if (g_signal == SIGINT)
+		{
+			shell.status = 130;
+			g_signal = 0;
+		}
+		if (cmd[0] != '\0')
+			add_history(cmd);
+		exec_command(&shell, cmd);
+		free(cmd);
+	}
+	free_shell(&shell);
+	return (0);
 }
 
 /*

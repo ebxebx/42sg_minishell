@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ast.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
+/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 17:53:44 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/04 00:19:10 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/04/04 16:45:37 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -225,6 +225,8 @@ void	print_ast(t_ast *node, int depth)
 
 	if (!node)
 		return ;
+	if (depth == 0)
+		ft_printf("AST:\n");
 	print_ast(node->right, depth + 1);
 	i = 0;
 	while (i++ < depth)

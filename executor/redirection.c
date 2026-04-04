@@ -18,15 +18,16 @@ int	read_here_doc(char *limiter)
 	int		fd;
 	char	*line;
 
-	ft_printf("read_here_doc\n");
 	fd = open(HERE_DOC_TMP, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd < 0)
+		return (-1);
 	while (1)
 	{
 		line = readline("> ");
-		if (ft_strcmp(line, limiter) != 0)
-			write(fd, line, ft_strlen(line));
-		else
+		if (!line || ft_strcmp(line, limiter) == 0)
 			break ;
+		write(fd, line, ft_strlen(line));
+		write(fd, "\n", 1);
 		free(line);
 	}
 	if (line)
