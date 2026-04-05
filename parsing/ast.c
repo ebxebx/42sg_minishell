@@ -69,6 +69,7 @@ t_ast	*create_node(char *value)
 	else
 		value = ft_strdup("");
 	new_node->value = value;
+	new_node->argv = NULL;
 	new_node->left = NULL;
 	new_node->right = NULL;
 	new_node->redirs = NULL;
@@ -83,9 +84,35 @@ void	free_ast(t_ast *node)
 		free_ast(node->left);
 		free_ast(node->right);
 		free_redirs(node->redirs);
+		ft_strarr_free(node->argv);
 		free(node->value);
 		free(node);
 	}
+}
+
+static char	**append_argv_word(char **argv, const char *word)
+{
+	char	**new_argv;
+	size_t	count;
+
+	count = 0;
+	while (argv && argv[count])
+		count++;
+	new_argv = ft_calloc(count + 2, sizeof(char *));
+	if (!new_argv)
+		return (NULL);
+	count = 0;
+	while (argv && argv[count])
+	{
+		new_argv[count] = argv[count];
+		count++;
+	}
+	new_argv[count] = ft_strdup(word);
+	if (!new_argv[count])
+		return (free(new_argv), NULL);
+	new_argv[count + 1] = NULL;
+	free(argv);
+	return (new_argv);
 }
 
 // Function to check if a token is an operator
@@ -116,13 +143,6 @@ t_ast	*parse_cmd(t_token **tokens)
 {
 	t_token	*p;
 	t_ast	*ast;
-	char	*cmd_buf;
-	size_t	buf_len;
-	size_t	vlen;
-	char	*new_buf;
-
-	cmd_buf = NULL;
-	buf_len = 0;
 	if (!tokens || !*tokens)
 		return (NULL);
 	p = *tokens;
@@ -141,40 +161,24 @@ t_ast	*parse_cmd(t_token **tokens)
 			if (!p->next || p->next->type != TOK_WORD || append_redir(ast,
 					p->type, p->next->value))
 			{
-				free(cmd_buf);
 				free_ast(ast);
 				return (NULL);
 			}
 			p = p->next->next;
 			continue ;
 		}
-		vlen = ft_strlen(p->value);
-		// TODO realloc need to change or create own function
-		new_buf = realloc(cmd_buf, buf_len + vlen + 2);
-		if (!new_buf)
+		ast->argv = append_argv_word(ast->argv, p->value);
+		if (!ast->argv)
 		{
-			free(cmd_buf);
 			free_ast(ast);
 			return (NULL);
 		}
-		cmd_buf = new_buf;
-		if (buf_len == 0)
-			ft_memcpy(cmd_buf + buf_len, p->value, vlen);
-		else
-		{
-			cmd_buf[buf_len] = ' ';
-			ft_memcpy(cmd_buf + buf_len + 1, p->value, vlen);
-			vlen += 1;
-		}
-		buf_len += vlen;
-		cmd_buf[buf_len] = '\0';
 		p = p->next;
 	}
-	if (cmd_buf)
+	if (ast->argv && ast->argv[0])
 	{
 		free(ast->value);
-		ast->value = ft_strdup(cmd_buf);
-		free(cmd_buf);
+		ast->value = ft_strdup(ast->argv[0]);
 		if (!ast->value)
 			return (free_ast(ast), NULL);
 	}
@@ -217,6 +221,27 @@ t_ast	*parse_tokens_to_ast(t_token *tokens)
 	return (parse_pipeline(tokens));
 }
 
+static void	print_ast_argv(char **argv)
+{
+	int	i;
+
+	if (!argv || !argv[0])
+	{
+		ft_printf("%s", "");
+		return ;
+	}
+	ft_printf("[");
+	i = 0;
+	while (argv[i])
+	{
+		ft_printf("%s", argv[i]);
+		if (argv[i + 1])
+			ft_printf(", ");
+		i++;
+	}
+	ft_printf("]");
+}
+
 /* Print AST (for debugging purposes) */
 void	print_ast(t_ast *node, int depth)
 {
@@ -231,7 +256,10 @@ void	print_ast(t_ast *node, int depth)
 	i = 0;
 	while (i++ < depth)
 		ft_printf("    ");
-	ft_printf("%s", node->value);
+	if (node->argv)
+		print_ast_argv(node->argv);
+	else
+		ft_printf("%s", node->value);
 	redir = node->redirs;
 	if (redir)
 		ft_printf(" [");

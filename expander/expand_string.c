@@ -85,7 +85,11 @@ char	*expand_string(char *src, t_shell *shell)
 	while (src && src[i])
 	{
 		if ((src[i] == '\'' && dquot == 0) || (src[i] == '"' && squot == 0))
+		{
 			update_quote_stat(src[i], &squot, &dquot);
+			i++;
+			continue ;
+		}
 		if (src[i] == '$' && squot == 0)
 		{
 			if (handle_expansion(src, &i, shell, &res) == 0)

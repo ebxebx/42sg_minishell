@@ -176,16 +176,14 @@ int	execute_ast(t_shell *shell, t_ast *ast)
 		return (1);
 	if (!ft_strcmp(ast->value, "|"))
 		return (execute_pipeline(shell, ast));
-	argv = build_argv(ast->value);
+	argv = ast->argv;
 	if (argv && argv[0] && is_parent_builtin(argv[0]))
 	{
 		status = execute_parent_builtin_node(shell, ast, argv);
-		ft_strarr_free(argv);
 		if (shell->should_exit)
 			exit_shell_parent(shell);
 		return (status);
 	}
-	ft_strarr_free(argv);
 	return (execute_command_node(shell, ast));
 }
 

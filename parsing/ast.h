@@ -25,6 +25,7 @@ typedef struct s_redir
 typedef struct s_ast
 {
 	char			*value;
+	char			**argv;
 	struct s_ast	*left;
 	struct s_ast	*right;
 	t_redir			*redirs;
