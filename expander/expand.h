@@ -21,6 +21,7 @@
 int		expand_exit_status(t_shell *shell, char **res);
 int		expand_env_var(char *src, int *i, t_shell *shell, char **res);
 char	*expand_string(char *src, t_shell *shell);
+char	*expand_heredoc_line(char *src, t_shell *shell);
 int		expand_tokens(t_token *tokens, t_shell *shell);
 int		copy_str(char **res, char *add);
 int		copy_char(char **res, char c);

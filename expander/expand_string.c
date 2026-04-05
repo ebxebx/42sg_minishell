@@ -101,3 +101,26 @@ char	*expand_string(char *src, t_shell *shell)
 	}
 	return (res);
 }
+
+char	*expand_heredoc_line(char *src, t_shell *shell)
+{
+	int		i;
+	char	*res;
+
+	i = 0;
+	res = ft_strdup("");
+	if (!res)
+		return (NULL);
+	while (src && src[i])
+	{
+		if (src[i] == '$')
+		{
+			if (handle_expansion(src, &i, shell, &res) == 0)
+				return (free(res), NULL);
+		}
+		else if (copy_char(&res, src[i]) == 0)
+			return (free(res), NULL);
+		i++;
+	}
+	return (res);
+}

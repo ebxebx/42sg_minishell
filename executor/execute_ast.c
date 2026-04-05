@@ -41,10 +41,12 @@ static char	*make_heredoc_tmp_path(void)
 	return (path);
 }
 
-static int	read_heredoc_to_path(char *limiter, char *path)
+static int	read_heredoc_to_path(
+			t_shell *shell, char *limiter, char *path, int should_expand)
 {
 	int		fd;
 	char	*line;
+	char	*expanded;
 
 	fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd < 0)
@@ -54,7 +56,16 @@ static int	read_heredoc_to_path(char *limiter, char *path)
 		line = readline("> ");
 		if (!line || ft_strcmp(line, limiter) == 0)
 			break ;
-		write(fd, line, ft_strlen(line));
+		if (should_expand)
+		{
+			expanded = expand_heredoc_line(line, shell);
+			if (!expanded)
+				return (free(line), close(fd), 1);
+			write(fd, expanded, ft_strlen(expanded));
+			free(expanded);
+		}
+		else
+			write(fd, line, ft_strlen(line));
 		write(fd, "\n", 1);
 		free(line);
 	}
@@ -64,20 +75,23 @@ static int	read_heredoc_to_path(char *limiter, char *path)
 	return (0);
 }
 
-static int	preprocess_command_heredocs(t_ast *ast)
+static int	preprocess_command_heredocs(t_ast *ast, t_shell *shell)
 {
 	t_redir	*redir;
 	char	*limiter;
 	char	*path;
+	int		should_expand;
 
 	redir = ast->redirs;
 	while (redir)
 	{
 		if (redir->type == TOK_RDIR_HEREDOC)
 		{
+			should_expand = !redir->preserve_empty;
 			limiter = strip_quotes(redir->file);
 			path = make_heredoc_tmp_path();
-			if (!limiter || !path || read_heredoc_to_path(limiter, path))
+			if (!limiter || !path
+				|| read_heredoc_to_path(shell, limiter, path, should_expand))
 				return (free(limiter), free(path), 1);
 			free(limiter);
 			free(redir->file);
@@ -89,14 +103,14 @@ static int	preprocess_command_heredocs(t_ast *ast)
 	return (0);
 }
 
-static int	preprocess_heredocs(t_ast *ast)
+static int	preprocess_heredocs(t_ast *ast, t_shell *shell)
 {
 	if (!ast)
 		return (0);
 	if (!ft_strcmp(ast->value, "|"))
-		return (preprocess_heredocs(ast->left)
-			|| preprocess_heredocs(ast->right));
-	return (preprocess_command_heredocs(ast));
+		return (preprocess_heredocs(ast->left, shell)
+			|| preprocess_heredocs(ast->right, shell));
+	return (preprocess_command_heredocs(ast, shell));
 }
 
 static int	is_parent_builtin(char *cmd)
@@ -172,7 +186,7 @@ int	execute_ast(t_shell *shell, t_ast *ast)
 
 	if (!shell || !ast)
 		return (1);
-	if (preprocess_heredocs(ast))
+	if (preprocess_heredocs(ast, shell))
 		return (1);
 	if (!ft_strcmp(ast->value, "|"))
 		return (execute_pipeline(shell, ast));

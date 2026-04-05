@@ -29,7 +29,8 @@ static void	free_redirs(t_redir *redir)
 	}
 }
 
-static int	append_redir(t_ast *ast, t_token_type type, const char *file)
+static int	append_redir(
+				t_ast *ast, t_token_type type, const char *file, int preserve_empty)
 {
 	t_redir	*new_redir;
 	t_redir	*cur;
@@ -41,6 +42,7 @@ static int	append_redir(t_ast *ast, t_token_type type, const char *file)
 		return (1);
 	new_redir->type = type;
 	new_redir->file = ft_strdup(file);
+	new_redir->preserve_empty = preserve_empty;
 	new_redir->next = NULL;
 	if (!new_redir->file)
 		return (free(new_redir), 1);
@@ -158,8 +160,8 @@ t_ast	*parse_cmd(t_token **tokens)
 		// Ether word or redirection
 		if (is_redirection_type(p->type))
 		{
-			if (!p->next || p->next->type != TOK_WORD || append_redir(ast,
-					p->type, p->next->value))
+				if (!p->next || p->next->type != TOK_WORD || append_redir(ast,
+						p->type, p->next->value, p->next->preserve_empty))
 			{
 				free_ast(ast);
 				return (NULL);

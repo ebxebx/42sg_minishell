@@ -12,6 +12,30 @@
 
 #include "executor.h"
 
+static int	has_whitespace(const char *str)
+{
+	int	i;
+
+	i = 0;
+	while (str && str[i])
+	{
+		if (str[i] == ' ' || str[i] == '\f' || str[i] == '\n'
+			|| str[i] == '\r' || str[i] == '\t' || str[i] == '\v')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
+static int	is_ambiguous_redirect(t_redir *redir, const char *target)
+{
+	if (redir->preserve_empty)
+		return (0);
+	if (!target || !target[0])
+		return (1);
+	return (has_whitespace(target));
+}
+
 static int	is_heredoc_tmp_file(const char *path)
 {
 	size_t	prefix_len;
@@ -34,6 +58,12 @@ int	apply_redirections(t_ast *cmd)
 		target = strip_quotes(redir->file);
 		if (!target)
 			return (1);
+		if (is_ambiguous_redirect(redir, target))
+		{
+			ft_putendl_fd("minishell: ambiguous redirect", 2);
+			free(target);
+			return (1);
+		}
 		if (redir->type == TOK_RDIR_IN)
 			fd = open(target, O_RDONLY);
 		else if (redir->type == TOK_RDIR_HEREDOC)
