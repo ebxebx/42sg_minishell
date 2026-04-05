@@ -31,6 +31,8 @@ typedef struct s_shell
 {
 	int				debug;
 	int				status;
+	int				should_exit;
+	int				exit_code;
 	char			**env;
 	char			**export;
 	t_token			*tokens;
@@ -41,7 +43,7 @@ extern sig_atomic_t	g_signal;
 
 void				init_shell(t_shell *shell, char **env);
 void				exec_command(t_shell *shell, char *cmd);
-void				free_shell(t_shell *shell, char **argv);
+void				free_shell(t_shell *shell);
 
 void				init_signal_prompt(void);
 void				init_signal_exec(void);

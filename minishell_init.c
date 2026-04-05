@@ -18,13 +18,15 @@ void	init_shell(t_shell *shell, char **env)
 {
 	shell->debug = 0;
 	shell->status = 0;
+	shell->should_exit = 0;
+	shell->exit_code = 0;
 	shell->env = dup_env(env);
 	shell->export = dup_env(env);
 	if (!shell->env || !shell->export)
 		exit(EXIT_FAILURE);
 }
 
-void	free_shell(t_shell *shell, char **argv)
+void	free_shell(t_shell *shell)
 {
 	ft_strarr_free(shell->env);
 	ft_strarr_free(shell->export);
@@ -32,6 +34,4 @@ void	free_shell(t_shell *shell, char **argv)
 		free_ast(shell->ast);
 	if (shell->tokens)
 		free_token_list(shell->tokens);
-	if (argv)
-		ft_strarr_free(argv);
 }

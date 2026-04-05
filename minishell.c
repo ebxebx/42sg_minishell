@@ -47,7 +47,7 @@ int	main(int argc, char **argv, char **env)
 		exec_command(&shell, cmd);
 		free(cmd);
 	}
-	free_shell(&shell, NULL);
+	free_shell(&shell);
 	return (0);
 }
 

@@ -49,7 +49,7 @@ test1: $(NAME)
 	$(TEST1_CMD)
 
 testv: $(NAME)
-	valgrind --leak-check=full --show-leak-kinds=all --suppressions=minishell_readline_merged.supp $(TEST_CMD)
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --track-fds=yes --trace-children=yes --suppressions=minishell_readline_merged.supp $(TEST_CMD)
 
 $(NAME): $(OBJS) $(LIBFT)
 	$(CC) $(CFLAGS) $(DEPFLAGS) $(OBJS) $(LIB_FLAGS) -o $(NAME)

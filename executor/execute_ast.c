@@ -146,6 +146,18 @@ static int	execute_parent_builtin_node(t_shell *shell, t_ast *ast, char **argv)
 	return (status);
 }
 
+static void	exit_shell_parent(t_shell *shell)
+{
+	int	exit_code;
+
+	exit_code = shell->exit_code;
+	free_shell(shell);
+	close(STDIN_FILENO);
+	close(STDOUT_FILENO);
+	close(STDERR_FILENO);
+	exit(exit_code);
+}
+
 int	execute_ast(t_shell *shell, t_ast *ast)
 {
 	char	**argv;
@@ -162,6 +174,8 @@ int	execute_ast(t_shell *shell, t_ast *ast)
 	{
 		status = execute_parent_builtin_node(shell, ast, argv);
 		ft_strarr_free(argv);
+		if (shell->should_exit)
+			exit_shell_parent(shell);
 		return (status);
 	}
 	ft_strarr_free(argv);

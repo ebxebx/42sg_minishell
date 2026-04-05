@@ -45,14 +45,16 @@ int	builtin_exit(t_shell *shell, char **argv)
 	ft_putendl_fd("exit", 1);
 	if (!argv[1])
 	{
-		free_shell(shell, argv);
-		exit(shell->status);
+		shell->should_exit = 1;
+		shell->exit_code = shell->status;
+		return (shell->status);
 	}
 	if (!ft_atoll_exit(argv[1], &n))
 	{
 		exit_numeric_error(argv[1]);
-		free_shell(shell, argv);
-		exit(2);
+		shell->should_exit = 1;
+		shell->exit_code = 2;
+		return (2);
 	}
 	if (argv[2])
 	{
@@ -60,6 +62,7 @@ int	builtin_exit(t_shell *shell, char **argv)
 		shell->status = 1;
 		return (1);
 	}
-	free_shell(shell, argv);
-	exit(mod_exit_code(n));
+	shell->should_exit = 1;
+	shell->exit_code = mod_exit_code(n);
+	return (shell->exit_code);
 }
