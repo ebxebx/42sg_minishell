@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_exit.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
+/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:37 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/04/04 21:28:13 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/04/05 13:02:15 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,13 +45,13 @@ int	builtin_exit(t_shell *shell, char **argv)
 	ft_putendl_fd("exit", 1);
 	if (!argv[1])
 	{
-		free_shell(shell);
+		free_shell(shell, argv);
 		exit(shell->status);
 	}
 	if (!ft_atoll_exit(argv[1], &n))
 	{
 		exit_numeric_error(argv[1]);
-		free_shell(shell);
+		free_shell(shell, argv);
 		exit(2);
 	}
 	if (argv[2])
@@ -60,6 +60,6 @@ int	builtin_exit(t_shell *shell, char **argv)
 		shell->status = 1;
 		return (1);
 	}
-	free_shell(shell);
+	free_shell(shell, argv);
 	exit(mod_exit_code(n));
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_exec_command.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
+/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 12:30:09 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/04 00:36:00 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/04/05 12:47:17 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,28 +19,27 @@
 
 void	exec_command(t_shell *shell, char *cmd)
 {
-	t_token	*tokens;
-	t_ast	*ast;
-
-	tokens = parse_token(cmd);
-	if (!tokens)
+	shell->tokens = parse_token(cmd);
+	if (!shell->tokens)
 		return ;
-	if (!expand_tokens(tokens, shell))
+	if (!expand_tokens(shell->tokens, shell))
 	{
-		free_token_list(tokens);
+		free_token_list(shell->tokens);
 		shell->status = 1;
 		return ;
 	}
-	ast = parse_tokens_to_ast(tokens);
-	if (!ast)
+	shell->ast = parse_tokens_to_ast(shell->tokens);
+	if (!shell->ast)
 	{
-		free_token_list(tokens);
+		free_token_list(shell->tokens);
 		shell->status = 1;
 		return ;
 	}
-	if (shell && shell->debug && ast)
-		print_ast(ast, 0);
-	shell->status = execute_ast(shell, ast);
-	free_ast(ast);
-	free_token_list(tokens);
+	if (shell && shell->debug && shell->ast)
+		print_ast(shell->ast, 0);
+	shell->status = execute_ast(shell, shell->ast);
+	free_ast(shell->ast);
+	shell->ast = NULL;
+	free_token_list(shell->tokens);
+	shell->tokens = NULL;
 }

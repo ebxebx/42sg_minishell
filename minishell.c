@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 12:30:09 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/04 16:43:57 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/05 13:00:59 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,7 +47,7 @@ int	main(int argc, char **argv, char **env)
 		exec_command(&shell, cmd);
 		free(cmd);
 	}
-	free_shell(&shell);
+	free_shell(&shell, NULL);
 	return (0);
 }
 
