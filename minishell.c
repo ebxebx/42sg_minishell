@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 12:30:09 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/05 17:40:25 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/05 19:43:27 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,6 +15,51 @@
 #include "minishell_prompt.h"
 #include "parsing/ast.h"
 #include "parsing/minishell_tokenize.h"
+
+static char	*append_char(char *line, size_t len, char c)
+{
+	char	*new_line;
+
+	new_line = malloc(len + 2);
+	if (!new_line)
+		return (free(line), NULL);
+	if (line)
+	{
+		ft_memcpy(new_line, line, len);
+		free(line);
+	}
+	new_line[len] = c;
+	new_line[len + 1] = '\0';
+	return (new_line);
+}
+
+static char	*read_noninteractive_line(void)
+{
+	char	c;
+	char	*line;
+	size_t	len;
+	ssize_t	nread;
+
+	line = NULL;
+	len = 0;
+	while (1)
+	{
+		nread = read(STDIN_FILENO, &c, 1);
+		if (nread <= 0)
+			break ;
+		if (c == '\n')
+			break ;
+		line = append_char(line, len, c);
+		if (!line)
+			return (NULL);
+		len++;
+	}
+	if (nread <= 0 && len == 0)
+		return (NULL);
+	if (!line)
+		line = ft_strdup("");
+	return (line);
+}
 
 int	main(int argc, char **argv, char **env)
 {
@@ -33,7 +78,10 @@ int	main(int argc, char **argv, char **env)
 		if (!shell.debug || !prompt)
 			prompt = ft_strdup("minishell> ");
 		init_signal_prompt();
-		cmd = readline(prompt);
+		if (isatty(STDIN_FILENO))
+			cmd = readline(prompt);
+		else
+			cmd = read_noninteractive_line();
 		free(prompt);
 		if (!cmd)
 			break ;
@@ -42,15 +90,19 @@ int	main(int argc, char **argv, char **env)
 			shell.status = 130;
 			g_signal = 0;
 		}
-		if (cmd[0] != '\0')
+		if (isatty(STDIN_FILENO) && cmd[0] != '\0')
 			add_history(cmd);
 		exec_command(&shell, cmd);
 		free(cmd);
+		if (shell.should_exit)
+			break ;
 	}
 	rl_clear_history();
 	free_shell(&shell);
 	close_all_fds();
-	return (0);
+	if (shell.should_exit)
+		return (shell.exit_code);
+	return (shell.status);
 }
 
 /*
