@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_ast.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
+/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 00:00:00 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/04 21:25:41 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/04/05 16:57:45 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -151,11 +151,18 @@ static void	exit_shell_parent(t_shell *shell)
 	int	exit_code;
 
 	exit_code = shell->exit_code;
+	rl_clear_history();
 	free_shell(shell);
-	close(STDIN_FILENO);
-	close(STDOUT_FILENO);
-	close(STDERR_FILENO);
+	close_all_fds();
 	exit(exit_code);
+}
+
+static void	exit_ast_child(t_shell *shell, int status)
+{
+	if (shell)
+		free_shell(shell);
+	close_all_fds();
+	exit(status);
 }
 
 int	execute_ast(t_shell *shell, t_ast *ast)
@@ -187,6 +194,6 @@ void	execute_ast_child(t_shell *shell, t_ast *ast)
 	if (!shell || !ast)
 		exit(1);
 	if (!ft_strcmp(ast->value, "|"))
-		exit(execute_pipeline(shell, ast));
+		exit_ast_child(shell, execute_pipeline(shell, ast));
 	execute_command_child(shell, ast);
 }

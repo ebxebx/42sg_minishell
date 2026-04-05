@@ -19,7 +19,26 @@
 		*in_squote = !(*in_squote);
 	else if (c == '"' && *in_squote == 0)
 		*in_dquote = !(*in_dquote);
-} */
+	} */
+
+void	close_all_fds(void)
+{
+	int	fd;
+	int	probe_fd;
+
+	fd = 0;
+	while (fd < 1024)
+	{
+		probe_fd = dup(fd);
+		if (!(probe_fd < 0 && errno == EBADF))
+		{
+			if (probe_fd >= 0)
+				close(probe_fd);
+			close(fd);
+		}
+		fd++;
+	}
+}
 
 char	*strip_quotes(const char *value)
 {

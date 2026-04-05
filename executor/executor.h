@@ -27,6 +27,7 @@ void	execute_command_child(t_shell *shell, t_ast *cmd);
 int		apply_redirections(t_ast *cmd);
 
 // utils...
+void	close_all_fds(void);
 char	*strip_quotes(const char *value);
 char	**build_argv(char *cmdline);
 

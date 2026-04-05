@@ -17,6 +17,17 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 
+static void	exit_command_child(t_shell *shell, char **argv, int status)
+{
+	if (argv)
+		ft_strarr_free(argv);
+	rl_clear_history();
+	if (shell)
+		free_shell(shell);
+	close_all_fds();
+	exit(status);
+}
+
 static int	is_builtin_command(char *cmd)
 {
 	if (!cmd)
@@ -163,39 +174,32 @@ void	execute_command_child(t_shell *shell, t_ast *cmd)
 		exit(1);
 	signal(SIGINT, SIG_DFL);
 	signal(SIGQUIT, SIG_DFL);
-	// redirection only
 	if (cmd->redirs && (!cmd->value || !cmd->value[0]))
 	{
 		if (apply_redirections(cmd))
-			exit(1);
-		exit(0);
+			exit_command_child(shell, NULL, 1);
+		exit_command_child(shell, NULL, 0);
 	}
-	// empty command
 	if (!cmd->value[0])
-		exit(0);
+		exit_command_child(shell, NULL, 0);
 	if (!shell || !cmd || !cmd->value)
-		exit(1);
+		exit_command_child(shell, NULL, 1);
 	argv = build_argv(cmd->value);
 	if (!argv)
-		exit(1);
+		exit_command_child(shell, NULL, 1);
 	if (apply_redirections(cmd))
-	{
-		ft_strarr_free(argv);
-		exit(1);
-	}
+		exit_command_child(shell, argv, 1);
 	if (is_builtin_command(argv[0]))
 	{
 		status = run_builtin(shell, argv);
-		ft_strarr_free(argv);
-		exit(status);
+		exit_command_child(shell, argv, status);
 	}
 	status = exec_with_path(argv, shell->env);
 	if (status == 127 && !ft_strchr(argv[0], '/'))
 		ft_dprintf(2, "%s: command not found\n", argv[0]);
 	else if (status != 0 && errno)
 		perror(argv[0]);
-	ft_strarr_free(argv);
-	exit(status);
+	exit_command_child(shell, argv, status);
 }
 
 int	execute_command_node(t_shell *shell, t_ast *cmd)

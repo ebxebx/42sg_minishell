@@ -6,11 +6,12 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 12:30:09 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/05 13:00:59 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/05 17:40:25 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+#include "executor/executor.h"
 #include "minishell_prompt.h"
 #include "parsing/ast.h"
 #include "parsing/minishell_tokenize.h"
@@ -25,7 +26,6 @@ int	main(int argc, char **argv, char **env)
 	shell.debug = argc > 1 && ft_strcmp(argv[1], "debug") == 0;
 	if (shell.debug)
 		ft_printf("!!!Debug mode enabled\n");
-	// Main loop
 	while (1)
 	{
 		if (shell.debug)
@@ -47,7 +47,9 @@ int	main(int argc, char **argv, char **env)
 		exec_command(&shell, cmd);
 		free(cmd);
 	}
+	rl_clear_history();
 	free_shell(&shell);
+	close_all_fds();
 	return (0);
 }
 
