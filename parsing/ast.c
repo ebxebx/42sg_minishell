@@ -167,6 +167,11 @@ t_ast	*parse_cmd(t_token **tokens)
 			p = p->next->next;
 			continue ;
 		}
+		if (!p->value[0] && !p->preserve_empty)
+		{
+			p = p->next;
+			continue ;
+		}
 		ast->argv = append_argv_word(ast->argv, p->value);
 		if (!ast->argv)
 		{

@@ -13,6 +13,20 @@
 #include "minishell_tokenize.h"
 #include "../libft/libft.h"
 
+static int	has_quotes(const char *value)
+{
+	int	i;
+
+	i = 0;
+	while (value && value[i])
+	{
+		if (value[i] == '\'' || value[i] == '"')
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 t_token	*create_token(const char *value, size_t len, t_token_type type)
 {
 	t_token	*new_token;
@@ -27,6 +41,7 @@ t_token	*create_token(const char *value, size_t len, t_token_type type)
 		return (NULL);
 	}
 	new_token->type = type;
+	new_token->preserve_empty = 0;
 	new_token->next = NULL;
 	return (new_token);
 }
@@ -157,6 +172,8 @@ t_token	*parse_token(const char *input)
 				return (NULL);
 			}
 			token = create_token(input + i, len, TOK_WORD);
+			if (token)
+				token->preserve_empty = has_quotes(token->value);
 			i += len; // Move index to end of token
 		}
 
