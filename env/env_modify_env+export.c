@@ -3,15 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   env_modify_env+export.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
+/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:37 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/04/04 22:29:05 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/04/05 11:23:29 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "env.h"
 #include "../builtin/builtin.h"
+#include "env.h"
 
 int	env_index(char **env, char *key)
 {
@@ -27,7 +27,7 @@ int	env_index(char **env, char *key)
 	return (-1);
 }
 
-//for "export a, checks if variable alrd exists. y, return, n, add to export"
+// for "export a, checks if variable alrd exists. y, return, n, add to export"
 int	mark_exported(t_shell *shell, char *str)
 {
 	char	**new_export;
@@ -41,7 +41,7 @@ int	mark_exported(t_shell *shell, char *str)
 	return (0);
 }
 
-//for "export a= and a=42"
+// for "export a= and a=42"
 int	assign_export(t_shell *shell, char *str)
 {
 	char	**new_export;
@@ -57,7 +57,7 @@ int	assign_export(t_shell *shell, char *str)
 	shell->export = new_export;
 	return (0);
 }
-//duplicate env variables from OS
+// duplicate env variables from OS
 char	**dup_env(char **env)
 {
 	int		i;
@@ -82,4 +82,21 @@ char	**dup_env(char **env)
 	}
 	copy[i] = NULL;
 	return (copy);
+}
+
+// to get the value in key=value pair after $
+// pointer to the indexed row in env array
+// then move pointer keylen+1
+char	*get_env_value(char **env, char *key)
+{
+	int		index;
+	char	*entry;
+
+	index = env_index(env, key);
+	if (index == -1)
+		return (NULL);
+	entry = env[index];
+	if (!has_equal(env[index]))
+		return ("");
+	return (entry + key_len(entry) + 1);
 }

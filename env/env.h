@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   env.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
+/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 12:35:04 by zchoo             #+#    #+#             */
-/*   Updated: 2026/03/31 14:57:46 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/04/05 11:23:25 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,7 @@ int		env_index(char **env, char *key);
 int		has_equal(char *str);
 int		is_valid_identifier(char *str);
 char	**dup_env(char **env);
+char	*get_env_value(char **env, char *key);
 
 char	**add_env_entry(char **env, char *new_entry);
 char	**replace_env_entry(char **env, int index, char *new_entry);

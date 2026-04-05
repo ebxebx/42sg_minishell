@@ -3,31 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   expand_utils.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
+/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:26 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/04/04 13:32:30 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/04/05 11:23:04 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "expand.h"
-
-// to get the value in key=value pair after $
-// pointer to the indexed row in env array
-// then move pointer keylen+1
-char	*get_env_value(char **env, char *key)
-{
-	int		index;
-	char	*entry;
-
-	index = env_index(env, key);
-	if (index == -1)
-		return (NULL);
-	entry = env[index];
-	if (!has_equal(env[index]))
-		return ("");
-	return (entry + key_len(entry) + 1);
-}
 
 //get the length of the variable bef an invalid char
 static int	var_key_len(char *src, int start)

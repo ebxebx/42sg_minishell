@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_command_node.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
+/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 00:00:00 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/04 22:03:43 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/04/05 11:28:13 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,22 +49,6 @@ static int	run_builtin(t_shell *shell, char **argv)
 	if (!ft_strcmp(argv[0], "pwd"))
 		return (builtin_pwd(shell));
 	return (1);
-}
-
-static char	*get_env_value(char **env, char *key)
-{
-	size_t	key_len;
-	int		i;
-
-	key_len = ft_strlen(key);
-	i = 0;
-	while (env && env[i])
-	{
-		if (!ft_strncmp(env[i], key, key_len) && env[i][key_len] == '=')
-			return (env[i] + key_len + 1);
-		i++;
-	}
-	return (NULL);
 }
 
 static int	exec_sh_fallback(char *script, char **argv, char **env)
@@ -129,7 +113,7 @@ static int	exec_with_path(char **argv, char **env)
 		return (126);
 	}
 	path_env = get_env_value(env, "PATH");
-	if (!path_env)
+	if (path_env && !*path_env)
 	{
 		errno = ENOENT;
 		return (127);
