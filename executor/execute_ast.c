@@ -47,32 +47,68 @@ static int	read_heredoc_to_path(
 	int		fd;
 	char	*line;
 	char	*expanded;
+	pid_t	pid;
+	int		status;
 
-	fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	if (fd < 0)
-		return (perror(path), 1);
-	while (1)
+	pid = fork();
+	if (pid < 0)
+		return (perror("fork"), 1);
+	if (pid == 0)
 	{
-		line = readline("> ");
-		if (!line || ft_strcmp(line, limiter) == 0)
-			break ;
-		if (should_expand)
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_IGN);
+		fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if (fd < 0)
 		{
-			expanded = expand_heredoc_line(line, shell);
-			if (!expanded)
-				return (free(line), close(fd), 1);
-			write(fd, expanded, ft_strlen(expanded));
-			free(expanded);
+			perror(path);
+			exit(1);
 		}
-		else
-			write(fd, line, ft_strlen(line));
-		write(fd, "\n", 1);
-		free(line);
+		while (1)
+		{
+			line = readline("> ");
+			if (!line)
+			{
+				ft_dprintf(2,
+					"minishell: warning: here-document delimited by end-of-file "
+					"(wanted `%s')\n", limiter);
+				break ;
+			}
+			if (ft_strcmp(line, limiter) == 0)
+				break ;
+			if (should_expand)
+			{
+				expanded = expand_heredoc_line(line, shell);
+				if (!expanded)
+				{
+					free(line);
+					close(fd);
+					exit(1);
+				}
+				write(fd, expanded, ft_strlen(expanded));
+				free(expanded);
+			}
+			else
+				write(fd, line, ft_strlen(line));
+			write(fd, "\n", 1);
+			free(line);
+		}
+		if (line)
+			free(line);
+		close(fd);
+		exit(0);
 	}
-	if (line)
-		free(line);
-	close(fd);
-	return (0);
+	init_signal_exec();
+	while (waitpid(pid, &status, 0) < 0)
+	{
+		if (errno != EINTR)
+			return (init_signal_prompt(), perror("waitpid"), unlink(path), 1);
+	}
+	init_signal_prompt();
+	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+		return (unlink(path), 130);
+	if (WIFEXITED(status))
+		return (WEXITSTATUS(status));
+	return (unlink(path), 1);
 }
 
 static int	preprocess_command_heredocs(t_ast *ast, t_shell *shell)
@@ -81,6 +117,7 @@ static int	preprocess_command_heredocs(t_ast *ast, t_shell *shell)
 	char	*limiter;
 	char	*path;
 	int		should_expand;
+	int		hd_status;
 
 	redir = ast->redirs;
 	while (redir)
@@ -90,9 +127,16 @@ static int	preprocess_command_heredocs(t_ast *ast, t_shell *shell)
 			should_expand = !redir->preserve_empty;
 			limiter = strip_quotes(redir->file);
 			path = make_heredoc_tmp_path();
-			if (!limiter || !path
-				|| read_heredoc_to_path(shell, limiter, path, should_expand))
+			if (!limiter || !path)
 				return (free(limiter), free(path), 1);
+			hd_status = read_heredoc_to_path(shell, limiter, path,
+					should_expand);
+			if (hd_status)
+			{
+				if (hd_status == 130)
+					shell->status = 130;
+				return (free(limiter), free(path), hd_status);
+			}
 			free(limiter);
 			free(redir->file);
 			redir->file = path;
@@ -105,11 +149,17 @@ static int	preprocess_command_heredocs(t_ast *ast, t_shell *shell)
 
 static int	preprocess_heredocs(t_ast *ast, t_shell *shell)
 {
+	int	status;
+
 	if (!ast)
 		return (0);
 	if (!ft_strcmp(ast->value, "|"))
-		return (preprocess_heredocs(ast->left, shell)
-			|| preprocess_heredocs(ast->right, shell));
+	{
+		status = preprocess_heredocs(ast->left, shell);
+		if (status)
+			return (status);
+		return (preprocess_heredocs(ast->right, shell));
+	}
 	return (preprocess_command_heredocs(ast, shell));
 }
 
@@ -186,8 +236,9 @@ int	execute_ast(t_shell *shell, t_ast *ast)
 
 	if (!shell || !ast)
 		return (1);
-	if (preprocess_heredocs(ast, shell))
-		return (1);
+	status = preprocess_heredocs(ast, shell);
+	if (status)
+		return (status);
 	if (!ft_strcmp(ast->value, "|"))
 		return (execute_pipeline(shell, ast));
 	argv = ast->argv;

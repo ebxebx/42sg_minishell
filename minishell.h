@@ -47,5 +47,6 @@ void				free_shell(t_shell *shell);
 
 void				init_signal_prompt(void);
 void				init_signal_exec(void);
+void				init_signal_heredoc(void);
 
 #endif

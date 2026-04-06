@@ -117,6 +117,39 @@ static char	**append_argv_word(char **argv, const char *word)
 	return (new_argv);
 }
 
+static int	is_word_sep(char c)
+{
+	return (c == ' ' || c == '\t' || c == '\n');
+}
+
+static char	**append_split_argv_words(char **argv, const char *word)
+{
+	size_t	start;
+	size_t	len;
+	char	*part;
+
+	start = 0;
+	while (word && word[start])
+	{
+		while (word[start] && is_word_sep(word[start]))
+			start++;
+		if (!word[start])
+			break ;
+		len = 0;
+		while (word[start + len] && !is_word_sep(word[start + len]))
+			len++;
+		part = ft_strndup(word + start, len);
+		if (!part)
+			return (ft_strarr_free(argv), NULL);
+		argv = append_argv_word(argv, part);
+		free(part);
+		if (!argv)
+			return (NULL);
+		start += len;
+	}
+	return (argv);
+}
+
 // Function to check if a token is an operator
 int	is_operator(char *token)
 {
@@ -174,7 +207,10 @@ t_ast	*parse_cmd(t_token **tokens)
 			p = p->next;
 			continue ;
 		}
-		ast->argv = append_argv_word(ast->argv, p->value);
+		if (!p->preserve_empty)
+			ast->argv = append_split_argv_words(ast->argv, p->value);
+		else
+			ast->argv = append_argv_word(ast->argv, p->value);
 		if (!ast->argv)
 		{
 			free_ast(ast);
