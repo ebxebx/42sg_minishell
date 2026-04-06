@@ -128,7 +128,7 @@ static int	execute_parent_builtin(t_shell *shell, char **argv)
 	if (!ft_strcmp(argv[0], "unset"))
 		return (builtin_unset(shell, argv));
 	if (!ft_strcmp(argv[0], "cd"))
-		return (builtin_cd(argv));
+		return (builtin_cd(shell, argv));
 	if (!ft_strcmp(argv[0], "exit"))
 		return (builtin_exit(shell, argv));
 	return (1);

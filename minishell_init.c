@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 12:30:09 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/05 12:59:32 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/06 15:14:47 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@
 void	init_shell(t_shell *shell, char **env)
 {
 	shell->debug = 0;
+	shell->ast = NULL;
+	shell->tokens = NULL;
 	shell->status = 0;
 	shell->should_exit = 0;
 	shell->exit_code = 0;
