@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   expand_string.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:26 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/04/04 15:24:25 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/06 23:08:24 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,6 +69,23 @@ int	handle_expansion(char *src, int *i, t_shell *shell, char **res)
 	return (expand_env_var(src, i, shell, res));
 }
 
+static int	is_quote_char(char c, int squot, int dquot)
+{
+	if (c == '\'' && dquot == 0)
+		return (1);
+	if (c == '"' && squot == 0)
+		return (1);
+	return (0);
+}
+
+//if current char is $,try expand, else copy the current char into res
+static int	proc_expand_or_char(char *src, int *i, t_shell *shell, char **res)
+{
+	if (src[*i] == '$')
+		return (handle_expansion(src, i, shell, res));
+	return (copy_char(res, src[*i]));
+}
+
 char	*expand_string(char *src, t_shell *shell)
 {
 	int		i;
@@ -84,18 +101,11 @@ char	*expand_string(char *src, t_shell *shell)
 		return (NULL);
 	while (src && src[i])
 	{
-		if ((src[i] == '\'' && dquot == 0) || (src[i] == '"' && squot == 0))
-		{
+		if (is_quote_char(src[i], squot, dquot))
 			update_quote_stat(src[i], &squot, &dquot);
-			i++;
-			continue ;
-		}
-		if (src[i] == '$' && squot == 0)
-		{
-			if (handle_expansion(src, &i, shell, &res) == 0)
-				return (free(res), NULL);
-		}
-		else if (copy_char(&res, src[i]) == 0)
+		else if (squot == 0 && proc_expand_or_char(src, &i, shell, &res) == 0)
+			return (free(res), NULL);
+		else if (squot != 0 && copy_char(&res, src[i]) == 0)
 			return (free(res), NULL);
 		i++;
 	}
