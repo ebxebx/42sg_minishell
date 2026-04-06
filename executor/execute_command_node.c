@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 00:00:00 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/05 11:28:13 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/06 16:23:41 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -167,7 +167,7 @@ void	execute_command_child(t_shell *shell, t_ast *cmd)
 	char	**argv;
 
 	if (shell->debug)
-		ft_printf("Executing command child: %p\n", cmd);
+		ft_printf("Executing command child: %p, value: %s\n", cmd, cmd->value);
 	if (!shell || !cmd)
 		exit(1);
 	signal(SIGINT, SIG_DFL);
@@ -179,7 +179,12 @@ void	execute_command_child(t_shell *shell, t_ast *cmd)
 		exit_command_child(shell, 0);
 	}
 	if (!cmd->value[0])
-		exit_command_child(shell, 0);
+	{
+		if (!cmd->argv || !cmd->argv[0])
+			exit_command_child(shell, 0);
+		ft_dprintf(2, ": command not found\n");
+		exit_command_child(shell, 127);
+	}
 	if (!shell || !cmd || !cmd->value)
 		exit_command_child(shell, 1);
 	argv = cmd->argv;
