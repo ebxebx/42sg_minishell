@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 00:00:00 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/05 16:57:45 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/06 22:42:51 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,12 +41,128 @@ static char	*make_heredoc_tmp_path(void)
 	return (path);
 }
 
+static void	free_lines(char **lines, int count)
+{
+	int	i;
+
+	i = 0;
+	while (i < count)
+		free(lines[i++]);
+	free(lines);
+}
+
+static void	sigint_heredoc_handler(int signo)
+{
+	if (signo == SIGINT)
+	{
+		write(1, "\n", 1);
+		g_signal = signo;
+		/* Break the child's blocking readline() immediately on Ctrl-C. */
+		close(STDIN_FILENO);
+	}
+}
+
+static char	**collect_heredoc_lines(char *limiter, int *out_count)
+{
+	char	**lines;
+	char	**tmp;
+	char	*line;
+	int		count;
+	int		cap;
+
+	count = 0;
+	cap = 8;
+	lines = malloc(sizeof(char *) * cap);
+	if (!lines)
+		return (NULL);
+	while (1)
+	{
+		line = readline("> ");
+		if (g_signal == SIGINT)
+			return (free(line), free_lines(lines, count), NULL);
+		if (!line || ft_strcmp(line, limiter) == 0)
+		{
+			if (line)
+				free(line);
+			break ;
+		}
+		if (count >= cap)
+		{
+			cap *= 2;
+			tmp = realloc(lines, sizeof(char *) * cap);
+			if (!tmp)
+				return (free(line), free_lines(lines, count), NULL);
+			lines = tmp;
+		}
+		lines[count++] = line;
+	}
+	*out_count = count;
+	return (lines);
+}
+
 static int	read_heredoc_to_path(
 			t_shell *shell, char *limiter, char *path, int should_expand)
 {
 	int		fd;
-	char	*line;
 	char	*expanded;
+	char	**lines;
+	int		count;
+	int		i;
+
+	lines = collect_heredoc_lines(limiter, &count);
+	if (!lines)
+	{
+		/* Match shell SIGINT status so the parent can restore prompt state. */
+		if (g_signal == SIGINT)
+			return (130);
+		return (1);
+	}
+	fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	if (fd < 0)
+		return (perror(path), free_lines(lines, count), 1);
+	i = 0;
+	while (i < count)
+	{
+		if (should_expand)
+		{
+			expanded = expand_heredoc_line(lines[i], shell);
+			if (!expanded)
+				return (free_lines(lines, count), close(fd), 1);
+			write(fd, expanded, ft_strlen(expanded));
+			free(expanded);
+		}
+		else
+			write(fd, lines[i], ft_strlen(lines[i]));
+		write(fd, "\n", 1);
+		i++;
+	}
+	free_lines(lines, count);
+	close(fd);
+	return (0);
+}
+
+static int	is_heredoc_tmp_file(const char *path)
+{
+	size_t	prefix_len;
+
+	if (!path)
+		return (0);
+	prefix_len = ft_strlen(HERE_DOC_TMP "_");
+	return (ft_strncmp(path, HERE_DOC_TMP "_", prefix_len) == 0);
+}
+
+static void	exit_heredoc_child(t_shell *shell, int status)
+{
+	rl_clear_history();
+	if (shell)
+		free_shell(shell);
+	close_all_fds();
+	exit(status);
+}
+
+static int	run_heredoc_child(t_shell *shell, char *limiter,
+		char *path, int should_expand)
+{
 	pid_t	pid;
 	int		status;
 
@@ -55,65 +171,39 @@ static int	read_heredoc_to_path(
 		return (perror("fork"), 1);
 	if (pid == 0)
 	{
-		signal(SIGINT, SIG_DFL);
+		int	child_status;
+
+		g_signal = 0;
+		signal(SIGINT, sigint_heredoc_handler);
 		signal(SIGQUIT, SIG_IGN);
-		fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (fd < 0)
-		{
-			perror(path);
-			exit(1);
-		}
-		while (1)
-		{
-			line = readline("> ");
-			if (!line)
-			{
-				ft_dprintf(2,
-					"minishell: warning: here-document delimited by end-of-file "
-					"(wanted `%s')\n", limiter);
-				break ;
-			}
-			if (ft_strcmp(line, limiter) == 0)
-				break ;
-			if (should_expand)
-			{
-				expanded = expand_heredoc_line(line, shell);
-				if (!expanded)
-				{
-					free(line);
-					close(fd);
-					exit(1);
-				}
-				write(fd, expanded, ft_strlen(expanded));
-				free(expanded);
-			}
-			else
-				write(fd, line, ft_strlen(line));
-			write(fd, "\n", 1);
-			free(line);
-		}
-		if (line)
-			free(line);
-		close(fd);
-		exit(0);
+		child_status = read_heredoc_to_path(shell, limiter, path, should_expand);
+		/* The child owns its forked copies and must free them before exit. */
+		free(limiter);
+		free(path);
+		exit_heredoc_child(shell, child_status);
 	}
-	init_signal_exec();
+	signal(SIGINT, SIG_IGN);
 	while (waitpid(pid, &status, 0) < 0)
 	{
 		if (errno != EINTR)
-			return (init_signal_prompt(), perror("waitpid"), unlink(path), 1);
+			break ;
 	}
 	init_signal_prompt();
-	if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
-		return (unlink(path), 130);
-	if (WIFEXITED(status))
-		return (WEXITSTATUS(status));
-	return (unlink(path), 1);
+	if (WIFSIGNALED(status) || (WIFEXITED(status) && WEXITSTATUS(status) != 0))
+	{
+		/* Let the caller treat heredoc cancellation like an interactive Ctrl-C. */
+		if (WIFEXITED(status) && WEXITSTATUS(status) == 130)
+			g_signal = SIGINT;
+		unlink(path);
+		return (1);
+	}
+	return (0);
 }
 
 static int	preprocess_command_heredocs(t_ast *ast, t_shell *shell)
 {
 	t_redir	*redir;
+	t_redir	*cleanup;
 	char	*limiter;
 	char	*path;
 	int		should_expand;
@@ -127,15 +217,20 @@ static int	preprocess_command_heredocs(t_ast *ast, t_shell *shell)
 			should_expand = !redir->preserve_empty;
 			limiter = strip_quotes(redir->file);
 			path = make_heredoc_tmp_path();
-			if (!limiter || !path)
-				return (free(limiter), free(path), 1);
-			hd_status = read_heredoc_to_path(shell, limiter, path,
-					should_expand);
-			if (hd_status)
+			if (!limiter || !path
+				|| run_heredoc_child(shell, limiter, path, should_expand))
 			{
-				if (hd_status == 130)
-					shell->status = 130;
-				return (free(limiter), free(path), hd_status);
+				free(limiter);
+				free(path);
+				cleanup = ast->redirs;
+				while (cleanup != redir)
+				{
+					if (cleanup->type == TOK_RDIR_IN
+						&& is_heredoc_tmp_file(cleanup->file))
+						unlink(cleanup->file);
+					cleanup = cleanup->next;
+				}
+				return (1);
 			}
 			free(limiter);
 			free(redir->file);
@@ -147,6 +242,27 @@ static int	preprocess_command_heredocs(t_ast *ast, t_shell *shell)
 	return (0);
 }
 
+static void	cleanup_heredoc_tmps(t_ast *ast)
+{
+	t_redir	*redir;
+
+	if (!ast)
+		return ;
+	if (!ft_strcmp(ast->value, "|"))
+	{
+		cleanup_heredoc_tmps(ast->left);
+		cleanup_heredoc_tmps(ast->right);
+		return ;
+	}
+	redir = ast->redirs;
+	while (redir)
+	{
+		if (redir->type == TOK_RDIR_IN && is_heredoc_tmp_file(redir->file))
+			unlink(redir->file);
+		redir = redir->next;
+	}
+}
+
 static int	preprocess_heredocs(t_ast *ast, t_shell *shell)
 {
 	int	status;
@@ -155,10 +271,17 @@ static int	preprocess_heredocs(t_ast *ast, t_shell *shell)
 		return (0);
 	if (!ft_strcmp(ast->value, "|"))
 	{
-		status = preprocess_heredocs(ast->left, shell);
-		if (status)
-			return (status);
-		return (preprocess_heredocs(ast->right, shell));
+		if (preprocess_heredocs(ast->left, shell))
+		{
+			cleanup_heredoc_tmps(ast->right);
+			return (1);
+		}
+		if (preprocess_heredocs(ast->right, shell))
+		{
+			cleanup_heredoc_tmps(ast->left);
+			return (1);
+		}
+		return (0);
 	}
 	return (preprocess_command_heredocs(ast, shell));
 }
@@ -236,9 +359,12 @@ int	execute_ast(t_shell *shell, t_ast *ast)
 
 	if (!shell || !ast)
 		return (1);
-	status = preprocess_heredocs(ast, shell);
-	if (status)
-		return (status);
+	if (preprocess_heredocs(ast, shell))
+	{
+		if (g_signal == SIGINT)
+			return (g_signal = 0, 130);
+		return (1);
+	}
 	if (!ft_strcmp(ast->value, "|"))
 		return (execute_pipeline(shell, ast));
 	argv = ast->argv;

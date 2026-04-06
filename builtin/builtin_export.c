@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_export.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:37 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/03/31 12:39:39 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/06 19:03:47 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,6 +41,13 @@ void	print_export_entry(char *entry)
 	ft_putchar_fd('\n', 1);
 }
 
+int	is_underscore_var(char *entry)
+{
+	if (!entry)
+		return (0);
+	return (entry[0] == '_' && (entry[1] == '=' || entry[1] == '\0'));
+}
+
 int	print_export(char **export)
 {
 	int	i;
@@ -48,7 +55,8 @@ int	print_export(char **export)
 	i = 0;
 	while (export && export[i])
 	{
-		print_export_entry(export[i]);
+		if (!is_underscore_var(export[i]))
+			print_export_entry(export[i]);
 		i++;
 	}
 	return (0);
