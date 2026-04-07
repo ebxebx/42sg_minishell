@@ -6,7 +6,7 @@
 /*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/04 15:29:01 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/07 19:09:08 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/04/07 19:58:55 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,8 +36,8 @@ char	*strip_quotes(const char *value)
 	size_t	i;
 	size_t	j;
 	char	*out;
-	int	single_quote;
-	int double_quote;
+	int		single_quote;
+	int		double_quote;
 
 	single_quote = 0;
 	double_quote = 0;
@@ -49,10 +49,9 @@ char	*strip_quotes(const char *value)
 	while (value[i])
 	{
 		if (value[i] == '\'' && double_quote == 0)
-				single_quote = !single_quote;
+			single_quote = !single_quote;
 		else if (value[i] == '\"' && single_quote == 0)
 			double_quote = !double_quote;
-
 		if (
 			(single_quote && !double_quote && value[i] != '\'')
 			|| (double_quote && !single_quote && value[i] != '"')
