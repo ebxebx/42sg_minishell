@@ -22,8 +22,9 @@ int	builtin_cd(t_shell *shell, char **argv)
 		ft_putendl_fd(": too many arguments", 2);
 		return (1);
 	}
-	if (!argv[1])
+	if (!argv[1] || !ft_strcmp(argv[1], "--"))
 	{
+		/* `cd --` uses HOME; `--` only stops option parsing here. */
 		path = get_env_value(shell->env, "HOME");
 		if (!path)
 		{

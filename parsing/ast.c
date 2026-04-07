@@ -12,6 +12,7 @@
 
 #include "../libft/libft.h"
 #include "ast.h"
+#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -167,6 +168,61 @@ static int	is_redirection_type(t_token_type type)
 		|| type == TOK_RDIR_HEREDOC || type == TOK_RDIR_APPEND);
 }
 
+static int	is_unsupported_type(t_token_type type)
+{
+	return (type == TOK_AND || type == TOK_OR
+		|| type == TOK_BRAC_OPEN || type == TOK_BRAC_CLOSE);
+}
+
+static int	is_command_start(t_token_type type)
+{
+	return (type == TOK_WORD || is_redirection_type(type));
+}
+
+static int	print_syntax_error(char *token)
+{
+	ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
+	if (!token)
+		ft_putstr_fd("newline", 2);
+	else
+		ft_putstr_fd(token, 2);
+	ft_putendl_fd("'", 2);
+	return (0);
+}
+
+static int	validate_tokens(t_token *tokens)
+{
+	t_token	*cur;
+
+	if (!tokens)
+		return (0);
+	cur = tokens;
+	/* Reject unsupported leading operators before building a partial AST. */
+	if (cur->type == TOK_PIPE || is_unsupported_type(cur->type))
+		return (print_syntax_error(cur->value));
+	while (cur)
+	{
+		if (is_unsupported_type(cur->type))
+			return (print_syntax_error(cur->value));
+		if (is_redirection_type(cur->type))
+		{
+			/* Redirections must always be followed by a word token. */
+			if (!cur->next || cur->next->type != TOK_WORD)
+				return (print_syntax_error(NULL));
+		}
+		else if (cur->type == TOK_PIPE)
+		{
+			/* Pipes need a valid command on the right-hand side. */
+			if (!cur->next)
+				return (print_syntax_error(NULL));
+			if (!is_command_start(cur->next->type))
+				return (print_syntax_error(cur->next->value));
+		}
+		cur = cur->next;
+	}
+	return (1);
+}
+
 /*
 1️⃣ Lowest level: command
 Handles:
@@ -246,7 +302,12 @@ t_ast	*parse_pipeline(t_token *tokens)
 		cur = cur->next;
 		// parse right-hand command (advances cur)
 		right = parse_cmd(&cur);
+		/* Avoid creating `|` nodes with a missing command branch. */
+		if (!right)
+			return (free_ast(left), NULL);
 		node = create_node("|");
+		if (!node)
+			return (free_ast(left), free_ast(right), NULL);
 		node->left = left;
 		node->right = right;
 		left = node;
@@ -260,6 +321,8 @@ t_ast	*parse_pipeline(t_token *tokens)
 t_ast	*parse_tokens_to_ast(t_token *tokens)
 {
 	if (!tokens)
+		return (NULL);
+	if (!validate_tokens(tokens))
 		return (NULL);
 	return (parse_pipeline(tokens));
 }

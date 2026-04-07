@@ -207,7 +207,6 @@ static int	preprocess_command_heredocs(t_ast *ast, t_shell *shell)
 	char	*limiter;
 	char	*path;
 	int		should_expand;
-	int		hd_status;
 
 	redir = ast->redirs;
 	while (redir)
@@ -265,8 +264,6 @@ static void	cleanup_heredoc_tmps(t_ast *ast)
 
 static int	preprocess_heredocs(t_ast *ast, t_shell *shell)
 {
-	int	status;
-
 	if (!ast)
 		return (0);
 	if (!ft_strcmp(ast->value, "|"))

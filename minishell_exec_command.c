@@ -16,15 +16,37 @@
 #include "parsing/minishell_tokenize.h"
 #include "expander/expand.h"
 
+static int	is_blank_command(char *cmd)
+{
+	int	i;
+
+	i = 0;
+	if (!cmd)
+		return (1);
+	while (cmd[i])
+	{
+		if (cmd[i] != ' ' && cmd[i] != '\t' && cmd[i] != '\n'
+			&& cmd[i] != '\r' && cmd[i] != '\v' && cmd[i] != '\f')
+			return (0);
+		i++;
+	}
+	return (1);
+}
 
 void	exec_command(t_shell *shell, char *cmd)
 {
 	shell->tokens = parse_token(cmd);
 	if (!shell->tokens)
+	{
+		/* Keep blank lines silent, but report parse failures like bash. */
+		if (!is_blank_command(cmd))
+			shell->status = 2;
 		return ;
+	}
 	if (!expand_tokens(shell->tokens, shell))
 	{
 		free_token_list(shell->tokens);
+		shell->tokens = NULL;
 		shell->status = 1;
 		return ;
 	}
@@ -32,7 +54,9 @@ void	exec_command(t_shell *shell, char *cmd)
 	if (!shell->ast)
 	{
 		free_token_list(shell->tokens);
-		shell->status = 1;
+		shell->tokens = NULL;
+		/* Syntax errors are parse failures, so return bash's status 2. */
+		shell->status = 2;
 		return ;
 	}
 	if (shell && shell->debug && shell->ast)

@@ -146,6 +146,12 @@ t_token	*parse_token(const char *input)
 			token = create_token(input + i, 2, TOK_RDIR_APPEND);
 			i += 2;
 		}
+		else if (ft_strncmp(input + i, ">|", 2) == 0)
+		{
+			/* Treat bash's force-overwrite operator like a normal output redir. */
+			token = create_token(input + i, 2, TOK_RDIR_OUT);
+			i += 2;
+		}
 		else if (input[i] == '|')
 		{
 			token = create_token(input + i, 1, TOK_PIPE);
@@ -166,8 +172,7 @@ t_token	*parse_token(const char *input)
 			len = token_len(input, i);
 			if (len == (size_t)-1)
 			{
-				// Handle unmatched quote error
-				ft_printf("Error: Unmatched quote\n");
+				ft_putendl_fd("minishell: unmatched quote", 2);
 				free_token_list(first_token);
 				return (NULL);
 			}
