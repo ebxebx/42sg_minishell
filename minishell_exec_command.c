@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell_exec_command.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 12:30:09 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/05 12:47:17 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/07 12:00:38 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include "parsing/ast.h"
 #include "parsing/minishell_tokenize.h"
 #include "expander/expand.h"
-
 
 void	exec_command(t_shell *shell, char *cmd)
 {

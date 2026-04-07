@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 12:30:09 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/05 17:40:25 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/07 12:21:19 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,24 @@
 #include "parsing/ast.h"
 #include "parsing/minishell_tokenize.h"
 
+static void	init_debug_mode(t_shell *shell, int argc, char **argv)
+{
+	shell->debug = 0;
+	if (argc > 1 && ft_strcmp(argv[1], "debug") == 0)
+		shell->debug = 1;
+	if (shell->debug)
+		ft_printf("!!!Debug mode enabled\n");
+}
+
+static void	handle_signal_status(t_shell *shell)
+{
+	if (g_signal == SIGINT)
+	{
+		shell->status = 130;
+		g_signal = 0;
+	}
+}
+
 int	main(int argc, char **argv, char **env)
 {
 	t_shell	shell;
@@ -23,9 +41,7 @@ int	main(int argc, char **argv, char **env)
 	char	*prompt;
 
 	init_shell(&shell, env);
-	shell.debug = argc > 1 && ft_strcmp(argv[1], "debug") == 0;
-	if (shell.debug)
-		ft_printf("!!!Debug mode enabled\n");
+	init_debug_mode(&shell, argc, argv);
 	while (1)
 	{
 		if (shell.debug)
@@ -37,20 +53,14 @@ int	main(int argc, char **argv, char **env)
 		free(prompt);
 		if (!cmd)
 			break ;
-		if (g_signal == SIGINT)
-		{
-			shell.status = 130;
-			g_signal = 0;
-		}
+		handle_signal_status(&shell);
 		if (cmd[0] != '\0')
 			add_history(cmd);
 		exec_command(&shell, cmd);
 		free(cmd);
 	}
 	rl_clear_history();
-	free_shell(&shell);
-	close_all_fds();
-	return (0);
+	return (close_all_fds(), free_shell(&shell), 0);
 }
 
 /*

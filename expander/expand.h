@@ -6,7 +6,7 @@
 /*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:34:21 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/07 10:55:32 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/04/07 11:28:53 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,5 @@ int		copy_str(char **res, char *add);
 int		copy_char(char **res, char c);
 int		handle_expansion(char *src, int *i, t_shell *shell, char **res);
 void	update_quote_stat(char c, int *in_squote, int *in_dquote);
-
 
 #endif
