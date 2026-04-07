@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 12:30:09 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/05 19:43:27 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/07 16:05:31 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,23 @@
 #include "minishell_prompt.h"
 #include "parsing/ast.h"
 #include "parsing/minishell_tokenize.h"
+static void	init_debug_mode(t_shell *shell, int argc, char **argv)
+{
+	shell->debug = 0;
+	if (argc > 1 && ft_strcmp(argv[1], "debug") == 0)
+		shell->debug = 1;
+	if (shell->debug)
+		ft_printf("!!!Debug mode enabled\n");
+}
 
+static void	handle_signal_status(t_shell *shell)
+{
+	if (g_signal == SIGINT)
+	{
+		shell->status = 130;
+		g_signal = 0;
+	}
+}
 static char	*append_char(char *line, size_t len, char c)
 {
 	char	*new_line;
@@ -68,9 +84,7 @@ int	main(int argc, char **argv, char **env)
 	char	*prompt;
 
 	init_shell(&shell, env);
-	shell.debug = argc > 1 && ft_strcmp(argv[1], "debug") == 0;
-	if (shell.debug)
-		ft_printf("!!!Debug mode enabled\n");
+	init_debug_mode(&shell, argc, argv);
 	while (1)
 	{
 		if (shell.debug)
@@ -85,11 +99,7 @@ int	main(int argc, char **argv, char **env)
 		free(prompt);
 		if (!cmd)
 			break ;
-		if (g_signal == SIGINT)
-		{
-			shell.status = 130;
-			g_signal = 0;
-		}
+		handle_signal_status(&shell);
 		if (isatty(STDIN_FILENO) && cmd[0] != '\0')
 			add_history(cmd);
 		exec_command(&shell, cmd);
