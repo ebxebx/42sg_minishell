@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:34:21 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/04 15:31:00 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/07 17:49:15 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,6 @@ int		apply_redirections(t_ast *cmd);
 // utils...
 void	close_all_fds(void);
 char	*strip_quotes(const char *value);
-char	**build_argv(char *cmdline);
+char	**build_argv(t_shell *shell, char *cmdline);
 
 #endif

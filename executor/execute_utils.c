@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/04 15:29:01 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/04 16:06:08 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/07 17:59:39 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ char	*strip_quotes(const char *value)
 	return (out);
 }
 
-char	**build_argv(char *cmdline)
+/* char	**build_argv(t_shell *shell, char *cmdline)
 {
 	t_token *tokens;
 	t_token *cur;
@@ -117,10 +117,14 @@ char	**build_argv(char *cmdline)
 	while (cur)
 	{
 		argv[i] = strip_quotes(cur->value);
+		if (shell->debug)
+			ft_printf("Token %zu: %s ->", i, argv[i]);
 		if (!argv[i++])
 			return (free_token_list(tokens), ft_strarr_free(argv), NULL);
 		cur = cur->next;
 	}
+	if (shell->debug)
+		ft_printf("\n");
 	free_token_list(tokens);
 	return (argv);
-}
+} */
