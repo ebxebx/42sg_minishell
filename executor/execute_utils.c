@@ -3,14 +3,40 @@
 /*                                                        :::      ::::::::   */
 /*   execute_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
+/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/04 15:29:01 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/07 19:58:55 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/04/07 21:21:11 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
+
+char	**get_paths_from_env(char **env)
+{
+	char	*path_env;
+
+	path_env = get_env_value(env, "PATH");
+	if (path_env && !*path_env)
+	{
+		errno = ENOENT;
+		return (NULL);
+	}
+	return (ft_split(path_env, ':'));
+}
+
+char	*get_full_path(char *cmd, char *path)
+{
+	char	*tmp;
+	char	*full;
+
+	tmp = ft_strjoin(path, "/");
+	full = NULL;
+	if (tmp)
+		full = ft_strjoin(tmp, cmd);
+	free(tmp);
+	return (full);
+}
 
 void	close_all_fds(void)
 {
@@ -52,11 +78,9 @@ char	*strip_quotes(const char *value)
 			single_quote = !single_quote;
 		else if (value[i] == '\"' && single_quote == 0)
 			double_quote = !double_quote;
-		if (
-			(single_quote && !double_quote && value[i] != '\'')
-			|| (double_quote && !single_quote && value[i] != '"')
-			|| (!single_quote && !double_quote && (value[i] != '\'' && value[i] != '"'))
-		)
+		if ((single_quote && !double_quote && value[i] != '\'') || (double_quote
+				&& !single_quote && value[i] != '"') || (!single_quote
+				&& !double_quote && (value[i] != '\'' && value[i] != '"')))
 			out[j++] = value[i];
 		i++;
 	}
