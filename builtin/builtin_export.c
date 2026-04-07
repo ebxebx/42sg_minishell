@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_export.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
+/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:37 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/04/06 19:03:47 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/04/07 16:22:18 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,8 @@ static int	print_export_option_error(char *arg)
 		ft_putchar_fd(arg[1], 2);
 		ft_putendl_fd(": invalid option", 2);
 	}
-	ft_putendl_fd("export: usage: export [-fn] [name[=value] ...] or export -p", 2);
+	ft_putendl_fd("export: usage: export [-fn] [name[=value] ...]"
+		" or export -p", 2);
 	return (2);
 }
 

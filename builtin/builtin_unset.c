@@ -3,18 +3,18 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_unset.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
+/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:37 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/03/31 13:49:28 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/04/07 16:21:24 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "builtin.h"
 
+/* Bash treats leading `-` names as invalid unset options, not variables. */
 static int	unset_option_error(char *arg)
 {
-	/* Bash treats leading `-` names as invalid unset options, not variables. */
 	ft_putstr_fd("minishell: unset: ", 2);
 	ft_putchar_fd(arg[0], 2);
 	ft_putchar_fd(arg[1], 2);
