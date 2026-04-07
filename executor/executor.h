@@ -30,11 +30,16 @@ int		execute_pipeline(t_shell *shell, t_ast *ast);
 void	execute_command_child(t_shell *shell, t_ast *cmd);
 int		apply_redirections(t_ast *cmd);
 
+// execve related
+int	    exec_with_path(char **argv, char **env);
+
 // run builtin
 int		is_builtin_command(char *cmd);
 int		run_builtin(t_shell *shell, char **argv);
 
 // utils...
+char	**get_paths_from_env(char **env);
+char	*get_full_path(char *cmd, char *path);
 void	close_all_fds(void);
 char	*strip_quotes(const char *value);
 // char	**build_argv(t_shell *shell, char *cmdline);

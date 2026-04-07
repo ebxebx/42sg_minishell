@@ -16,13 +16,13 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-static void	exit_command_child(t_shell *shell, int status)
+static int	exit_exec(char **paths, int saw_eacces)
 {
-	rl_clear_history();
-	if (shell)
-		free_shell(shell);
-	close_all_fds();
-	exit(status);
+	ft_strarr_free(paths);
+	if (saw_eacces)
+		return (errno = EACCES, 126);
+	errno = ENOENT;
+	return (127);
 }
 
 static int	exec_sh_fallback(char *script, char **argv, char **env)
@@ -76,15 +76,6 @@ static int	exec_full_path(char **argv, char **env)
 	return (126);
 }
 
-static int exit_exec(char **paths, int saw_eacces)
-{
-	ft_strarr_free(paths);
-	if (saw_eacces)
-		return (errno = EACCES, 126);
-	errno = ENOENT;
-	return (127);
-}
-
 static int	exec_find_path(char **argv, char **env, char **paths)
 {
 	char	*full;
@@ -114,7 +105,7 @@ static int	exec_find_path(char **argv, char **env, char **paths)
 	return (exit_exec(paths, saw_eacces));
 }
 
-static int	exec_with_path(char **argv, char **env)
+int	exec_with_path(char **argv, char **env)
 {
 	char	**paths;
 
