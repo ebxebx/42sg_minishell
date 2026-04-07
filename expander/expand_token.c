@@ -15,15 +15,15 @@
 int	expand_tokens(t_token *tokens, t_shell *shell)
 {
 	char	*expanded;
-	int		ok;
+	int		skip_heredoc_word;
 
-	ok = 0;
+	skip_heredoc_word = 0;
 	while (tokens)
 	{
 		if (tokens->type == TOK_RDIR_HEREDOC)
-			ok = 1;
-		else if (tokens->type == TOK_WORD && ok)
-			ok = 0;
+			skip_heredoc_word = 1;
+		else if (tokens->type == TOK_WORD && skip_heredoc_word)
+			skip_heredoc_word = 0;
 		else if (tokens->type == TOK_WORD)
 		{
 			expanded = expand_string(tokens->value, shell);

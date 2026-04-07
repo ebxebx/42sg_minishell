@@ -179,6 +179,22 @@ static int	is_command_start(t_token_type type)
 	return (type == TOK_WORD || is_redirection_type(type));
 }
 
+static int	is_digits_only(char *str)
+{
+	int	i;
+
+	if (!str || !str[0])
+		return (0);
+	i = 0;
+	while (str[i])
+	{
+		if (!ft_isdigit(str[i]))
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 static int	print_syntax_error(char *token)
 {
 	ft_putstr_fd("minishell: syntax error near unexpected token `", 2);
@@ -207,8 +223,10 @@ static int	validate_tokens(t_token *tokens)
 		if (is_redirection_type(cur->type))
 		{
 			/* Redirections must always be followed by a word token. */
-			if (!cur->next || cur->next->type != TOK_WORD)
+			if (!cur->next)
 				return (print_syntax_error(NULL));
+			if (cur->next->type != TOK_WORD)
+				return (print_syntax_error(cur->next->value));
 		}
 		else if (cur->type == TOK_PIPE)
 		{
@@ -240,7 +258,7 @@ t_ast	*parse_cmd(t_token **tokens)
 	ast = create_node("");
 	if (!ast)
 		return (NULL);
-	while (p && ft_strcmp(p->value, "|") != 0 
+	while (p && ft_strcmp(p->value, "|") != 0
 		/*&& ft_strcmp(p->value, "(") != 0
 		&& ft_strcmp(p->value, ")") != 0 
 		&& ft_strcmp(p->value, "&&") != 0
@@ -256,6 +274,16 @@ t_ast	*parse_cmd(t_token **tokens)
 				return (NULL);
 			}
 			p = p->next->next;
+			continue ;
+		}
+		if (p->type == TOK_WORD && is_digits_only(p->value)
+			&& p->next && is_redirection_type(p->next->type))
+		{
+			/*
+			** Ignore fd designators like `2>` as argv words until full fd-aware
+			** redirection support is added.
+			*/
+			p = p->next;
 			continue ;
 		}
 		if (!p->value[0] && !p->preserve_empty)

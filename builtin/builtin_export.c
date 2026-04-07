@@ -12,6 +12,28 @@
 
 #include "builtin.h"
 
+static int	is_underscore_var(char *entry)
+{
+	if (!entry)
+		return (0);
+	return (entry[0] == '_' && (entry[1] == '=' || entry[1] == '\0'));
+}
+
+static int	print_export_option_error(char *arg)
+{
+	if (!ft_strncmp(arg, "--", 2) && arg[2] != '\0')
+		ft_putendl_fd("minishell: export: --: invalid option", 2);
+	else
+	{
+		ft_putstr_fd("minishell: export: ", 2);
+		ft_putchar_fd(arg[0], 2);
+		ft_putchar_fd(arg[1], 2);
+		ft_putendl_fd(": invalid option", 2);
+	}
+	ft_putendl_fd("export: usage: export [-fn] [name[=value] ...] or export -p", 2);
+	return (2);
+}
+
 void	print_export_entry(char *entry)
 {
 	int	i;
@@ -41,13 +63,6 @@ void	print_export_entry(char *entry)
 	ft_putchar_fd('\n', 1);
 }
 
-int	is_underscore_var(char *entry)
-{
-	if (!entry)
-		return (0);
-	return (entry[0] == '_' && (entry[1] == '=' || entry[1] == '\0'));
-}
-
 int	print_export(char **export)
 {
 	int	i;
@@ -73,6 +88,8 @@ int	builtin_export(t_shell *shell, char **argv)
 	status = 0;
 	while (argv[i])
 	{
+		if (argv[i][0] == '-' && argv[i][1] != '\0')
+			return (print_export_option_error(argv[i]));
 		if (!is_valid_identifier(argv[i]))
 		{
 			ft_putstr_fd("minishell: export: ", 2);

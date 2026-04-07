@@ -12,28 +12,32 @@
 
 #include "builtin.h"
 
+static int	unset_option_error(char *arg)
+{
+	/* Bash treats leading `-` names as invalid unset options, not variables. */
+	ft_putstr_fd("minishell: unset: ", 2);
+	ft_putchar_fd(arg[0], 2);
+	ft_putchar_fd(arg[1], 2);
+	ft_putendl_fd(": invalid option", 2);
+	ft_putendl_fd("unset: usage: unset [-f] [-v] [-n] [name ...]", 2);
+	return (2);
+}
+
 int	builtin_unset(t_shell *shell, char **argv)
 {
 	int	i;
-	int	status;
 
 	i = 1;
-	status = 0;
 	while (argv[i])
 	{
-		if (!is_valid_identifier(argv[i]))
-		{
-			ft_putstr_fd("minishell: unset: ", 2);
-			ft_putstr_fd(argv[i], 2);
-			ft_putendl_fd(": not a valid identifier", 2);
-			status = 1;
-		}
-		else
+		if (argv[i][0] == '-' && argv[i][1] != '\0')
+			return (unset_option_error(argv[i]));
+		if (is_valid_identifier(argv[i]))
 		{
 			shell->env = remove_env_entry(shell->env, argv[i]);
 			shell->export = remove_env_entry(shell->export, argv[i]);
 		}
 		i++;
 	}
-	return (status);
+	return (0);
 }
