@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_pipeline.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 00:00:00 by zchoo             #+#    #+#             */
-/*   Updated: 2026/03/30 19:05:23 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/07 18:53:09 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ static void	close_pipe(int *pipe_fd)
 	close(pipe_fd[1]);
 }
 
-static pid_t	fork_pipe_side(t_shell *shell, t_ast *ast, int *pipe_fd, int is_left)
+pid_t	fork_pipe_side(t_shell *shell, t_ast *ast, int *pipe_fd, int is_left)
 {
 	pid_t	pid;
 

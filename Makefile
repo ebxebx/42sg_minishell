@@ -13,7 +13,7 @@ SRCS =	minishell.c minishell_init.c minishell_exec_command.c \
 		parsing/tokenize.c parsing/ast.c \
 		executor/execute_ast.c executor/execute_command_node.c \
 		executor/execute_pipeline.c executor/redirection.c \
-		executor/execute_utils.c \
+		executor/execute_utils.c executor/execute_builtin.c \
 		builtin/builtin_echo.c builtin/builtin_env.c builtin/builtin_pwd.c \
 		builtin/builtin_export.c builtin/builtin_unset.c builtin/builtin_cd.c \
 		builtin/builtin_exit_utils.c builtin/builtin_exit.c \

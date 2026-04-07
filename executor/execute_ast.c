@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_ast.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 00:00:00 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/06 22:42:51 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/07 19:00:43 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,13 @@ static void	free_lines(char **lines, int count)
 	free(lines);
 }
 
+/* Break the child's blocking readline() immediately on Ctrl-C. */
 static void	sigint_heredoc_handler(int signo)
 {
 	if (signo == SIGINT)
 	{
 		write(1, "\n", 1);
 		g_signal = signo;
-		/* Break the child's blocking readline() immediately on Ctrl-C. */
 		close(STDIN_FILENO);
 	}
 }
@@ -165,14 +165,13 @@ static int	run_heredoc_child(t_shell *shell, char *limiter,
 {
 	pid_t	pid;
 	int		status;
+	int		child_status;
 
 	pid = fork();
 	if (pid < 0)
 		return (perror("fork"), 1);
 	if (pid == 0)
 	{
-		int	child_status;
-
 		g_signal = 0;
 		signal(SIGINT, sigint_heredoc_handler);
 		signal(SIGQUIT, SIG_IGN);
