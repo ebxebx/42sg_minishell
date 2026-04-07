@@ -18,7 +18,8 @@ static void	close_pipe(int *pipe_fd)
 	close(pipe_fd[1]);
 }
 
-pid_t	fork_pipe_side(t_shell *shell, t_ast *ast, int *pipe_fd, int is_left)
+static pid_t	fork_pipe_side(t_shell *shell, t_ast *ast, int *pipe_fd,
+	int side)
 {
 	pid_t	pid;
 
@@ -27,12 +28,12 @@ pid_t	fork_pipe_side(t_shell *shell, t_ast *ast, int *pipe_fd, int is_left)
 		return (perror("fork"), -1);
 	if (pid == 0)
 	{
-		if (is_left && dup2(pipe_fd[1], STDOUT_FILENO) < 0)
+		if (side == LEFT && dup2(pipe_fd[1], STDOUT_FILENO) < 0)
 		{
 			perror("dup2");
 			exit(1);
 		}
-		if (!is_left && dup2(pipe_fd[0], STDIN_FILENO) < 0)
+		if (side == RIGHT && dup2(pipe_fd[0], STDIN_FILENO) < 0)
 		{
 			perror("dup2");
 			exit(1);
@@ -43,42 +44,51 @@ pid_t	fork_pipe_side(t_shell *shell, t_ast *ast, int *pipe_fd, int is_left)
 	return (pid);
 }
 
+static int	fork_pipeline_children(t_shell *shell, t_ast *ast, int *pipe_fd,
+	pid_t pids[2])
+{
+	pids[LEFT] = fork_pipe_side(shell, ast->left, pipe_fd, LEFT);
+	if (pids[LEFT] < 0)
+		return (close_pipe(pipe_fd), 1);
+	pids[RIGHT] = fork_pipe_side(shell, ast->right, pipe_fd, RIGHT);
+	if (pids[RIGHT] < 0)
+		return (close_pipe(pipe_fd), 1);
+	return (0);
+}
+
+static int	wait_child_process(pid_t pid, int *status)
+{
+	while (waitpid(pid, status, 0) < 0)
+	{
+		if (errno != EINTR)
+			return (perror("waitpid"), 1);
+	}
+	return (0);
+}
+
 int	execute_pipeline(t_shell *shell, t_ast *ast)
 {
 	int		pipe_fd[2];
-	pid_t	left_pid;
-	pid_t	right_pid;
-	int		left_status;
-	int		right_status;
+	pid_t	pids[2];
+	int		status[2];
 
 	if (!shell || !ast || ft_strcmp(ast->value, "|"))
 		return (1);
 	if (pipe(pipe_fd) < 0)
 		return (perror("pipe"), 1);
-	left_pid = fork_pipe_side(shell, ast->left, pipe_fd, 1);
-	if (left_pid < 0)
-		return (close_pipe(pipe_fd), 1);
-	right_pid = fork_pipe_side(shell, ast->right, pipe_fd, 0);
-	if (right_pid < 0)
-		return (close_pipe(pipe_fd), 1);
+	if (fork_pipeline_children(shell, ast, pipe_fd, pids))
+		return (1);
 	close_pipe(pipe_fd);
-	left_status = 0;
-	right_status = 0;
+	status[LEFT] = 0;
+	status[RIGHT] = 0;
 	init_signal_exec();
-	while (waitpid(left_pid, &left_status, 0) < 0)
-	{
-		if (errno != EINTR)
-			return (init_signal_prompt(), perror("waitpid"), 1);
-	}
-	while (waitpid(right_pid, &right_status, 0) < 0)
-	{
-		if (errno != EINTR)
-			return (init_signal_prompt(), perror("waitpid"), 1);
-	}
+	if (wait_child_process(pids[LEFT], &status[LEFT])
+		|| wait_child_process(pids[RIGHT], &status[RIGHT]))
+		return (init_signal_prompt(), 1);
 	init_signal_prompt();
-	if (WIFEXITED(right_status))
-		return (WEXITSTATUS(right_status));
-	if (WIFSIGNALED(right_status))
-		return (128 + WTERMSIG(right_status));
+	if (WIFEXITED(status[RIGHT]))
+		return (WEXITSTATUS(status[RIGHT]));
+	if (WIFSIGNALED(status[RIGHT]))
+		return (128 + WTERMSIG(status[RIGHT]));
 	return (1);
 }

@@ -70,9 +70,9 @@ char	*strip_quotes(const char *value)
 	out = malloc(ft_strlen(value) + 1);
 	if (!out)
 		return (NULL);
-	i = 0;
+	i = -1;
 	j = 0;
-	while (value[i])
+	while (value[++i])
 	{
 		if (value[i] == '\'' && double_quote == 0)
 			single_quote = !single_quote;
@@ -82,10 +82,8 @@ char	*strip_quotes(const char *value)
 				&& !single_quote && value[i] != '"') || (!single_quote
 				&& !double_quote && (value[i] != '\'' && value[i] != '"')))
 			out[j++] = value[i];
-		i++;
 	}
-	out[j] = '\0';
-	return (out);
+	return (out[j] = '\0', out);
 }
 
 /* char	**build_argv(t_shell *shell, char *cmdline)

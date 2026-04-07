@@ -23,6 +23,13 @@
 
 # define HERE_DOC_TMP ".abc_here_doc_xyz"
 
+/* For pipeline execution */
+enum e_pipe_side
+{
+	LEFT,
+	RIGHT
+};
+
 int		execute_ast(t_shell *shell, t_ast *ast);
 void	execute_ast_child(t_shell *shell, t_ast *ast);
 int		execute_command_node(t_shell *shell, t_ast *cmd);
