@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 11:26:08 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/08 13:33:10 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/08 13:44:10 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 #include "../builtin/builtin.h"
 #include "../parsing/minishell_tokenize.h"
 
-static char	*make_heredoc_tmp_path(void)
+/* static char	*make_heredoc_tmp_path(void)
 {
 	char			*pid_str;
 	char			*seq_str;
@@ -88,7 +88,7 @@ static char	**collect_heredoc_lines(char *limiter, int *out_count)
 	*out_count = count;
 	return (lines);
 }
-
+ */
 static int	read_heredoc_to_path(
 			t_shell *shell, char *limiter, char *path, int should_expand)
 {
@@ -139,7 +139,7 @@ static void	exit_heredoc_child(t_shell *shell, int status)
 	exit(status);
 }
 
-static int	run_heredoc_child(t_shell *shell, char *limiter,
+int	run_heredoc_child(t_shell *shell, char *limiter,
 		char *path, int should_expand)
 {
 	pid_t	pid;
@@ -177,85 +177,3 @@ static int	run_heredoc_child(t_shell *shell, char *limiter,
 	return (0);
 }
 
-static int	preprocess_command_heredocs(t_ast *ast, t_shell *shell)
-{
-	t_redir	*redir;
-	t_redir	*cleanup;
-	char	*limiter;
-	char	*path;
-	int		should_expand;
-
-	redir = ast->redirs;
-	while (redir)
-	{
-		if (redir->type == TOK_RDIR_HEREDOC)
-		{
-			should_expand = !redir->preserve_empty;
-			limiter = strip_quotes(redir->file);
-			path = make_heredoc_tmp_path();
-			if (!limiter || !path
-				|| run_heredoc_child(shell, limiter, path, should_expand))
-			{
-				free(limiter);
-				free(path);
-				cleanup = ast->redirs;
-				while (cleanup != redir)
-				{
-					if (cleanup->type == TOK_RDIR_IN
-						&& is_heredoc_tmp_file(cleanup->file))
-						unlink(cleanup->file);
-					cleanup = cleanup->next;
-				}
-				return (1);
-			}
-			free(limiter);
-			free(redir->file);
-			redir->file = path;
-			redir->type = TOK_RDIR_IN;
-		}
-		redir = redir->next;
-	}
-	return (0);
-}
-
-static void	cleanup_heredoc_tmps(t_ast *ast)
-{
-	t_redir	*redir;
-
-	if (!ast)
-		return ;
-	if (!ft_strcmp(ast->value, "|"))
-	{
-		cleanup_heredoc_tmps(ast->left);
-		cleanup_heredoc_tmps(ast->right);
-		return ;
-	}
-	redir = ast->redirs;
-	while (redir)
-	{
-		if (redir->type == TOK_RDIR_IN && is_heredoc_tmp_file(redir->file))
-			unlink(redir->file);
-		redir = redir->next;
-	}
-}
-
-int	preprocess_heredocs(t_ast *ast, t_shell *shell)
-{
-	if (!ast)
-		return (0);
-	if (!ft_strcmp(ast->value, "|"))
-	{
-		if (preprocess_heredocs(ast->left, shell))
-		{
-			cleanup_heredoc_tmps(ast->right);
-			return (1);
-		}
-		if (preprocess_heredocs(ast->right, shell))
-		{
-			cleanup_heredoc_tmps(ast->left);
-			return (1);
-		}
-		return (0);
-	}
-	return (preprocess_command_heredocs(ast, shell));
-}

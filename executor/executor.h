@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:34:21 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/08 12:51:07 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/08 13:45:18 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,9 +37,15 @@ int		execute_pipeline(t_shell *shell, t_ast *ast);
 void	execute_command_child(t_shell *shell, t_ast *cmd);
 int		apply_redirections(t_ast *cmd);
 
-// heredoc
+// heredoc related
+int		run_heredoc_child(t_shell *shell, char *limiter, char *path,
+			int should_expand);
 int		preprocess_heredocs(t_ast *ast, t_shell *shell);
 int		is_heredoc_tmp_file(const char *path);
+char	*make_heredoc_tmp_path(void);
+char	**collect_heredoc_lines(char *limiter, int *out_count);
+void	free_lines(char **lines, int count);
+void	cleanup_heredoc_tmps(t_ast *ast);
 
 // execve related
 int		exec_with_path(char **argv, char **env);

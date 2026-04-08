@@ -6,7 +6,112 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 12:50:04 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/08 12:50:41 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/08 14:35:42 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "executor.h"
+#include "../builtin/builtin.h"
+#include "../parsing/minishell_tokenize.h"
+
+char	*make_heredoc_tmp_path(void)
+{
+	char			*pid_str;
+	char			*seq_str;
+	char			*base;
+	char			*path;
+	static size_t	seq;
+
+	pid_str = ft_itoa(getpid());
+	seq_str = ft_itoa((int)seq++);
+	if (!pid_str || !seq_str)
+		return (free(pid_str), free(seq_str), NULL);
+	base = ft_strjoin(HERE_DOC_TMP "_", pid_str);
+	free(pid_str);
+	if (!base)
+		return (free(seq_str), NULL);
+	path = ft_strjoin(base, "_");
+	free(base);
+	if (!path)
+		return (free(seq_str), NULL);
+	base = path;
+	path = ft_strjoin(base, seq_str);
+	free(base);
+	free(seq_str);
+	return (path);
+}
+
+void	free_lines(char **lines, int count)
+{
+	int	i;
+
+	i = 0;
+	while (i < count)
+		free(lines[i++]);
+	free(lines);
+}
+
+static int	extend_lines(char ***lines, int count, int *cap)
+{
+	char	**new_lines;
+
+	if (count >= *cap)
+	{
+		*cap *= 2;
+		new_lines = realloc(*lines, sizeof(char *) * (*cap));
+		if (!new_lines)
+			return (1);
+		*lines = new_lines;
+	}
+	return (0);
+}
+
+char	**collect_heredoc_lines(char *limiter, int *out_count)
+{
+	char	**lines;
+	int		count;
+	int		cap;
+
+	count = 0;
+	cap = 2;
+	lines = malloc(sizeof(char *) * cap);
+	if (!lines)
+		return (NULL);
+	while (1)
+	{
+		if (extend_lines(&lines, count, &cap))
+			return (free_lines(lines, count), NULL);
+		lines[count] = readline("> ");
+		if (g_signal == SIGINT)
+			return (free_lines(lines, count), NULL);
+		if (!lines[count] || ft_strcmp(lines[count], limiter) == 0)
+		{
+			free(lines[count]);
+			lines[count] = NULL;
+			break ;
+		}
+		count++;
+	}
+	return (*out_count = count, lines);
+}
+
+void	cleanup_heredoc_tmps(t_ast *ast)
+{
+	t_redir	*redir;
+
+	if (!ast)
+		return ;
+	if (!ft_strcmp(ast->value, "|"))
+	{
+		cleanup_heredoc_tmps(ast->left);
+		cleanup_heredoc_tmps(ast->right);
+		return ;
+	}
+	redir = ast->redirs;
+	while (redir)
+	{
+		if (redir->type == TOK_RDIR_IN && is_heredoc_tmp_file(redir->file))
+			unlink(redir->file);
+		redir = redir->next;
+	}
+}

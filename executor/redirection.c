@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/31 23:00:00 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/08 13:23:32 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/08 13:34:39 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -109,12 +109,6 @@ int	apply_redirections(t_ast *cmd)
 				free(target), 1);
 		if (redirect_fd(redir, target))
 			return (perror(target), free(target), 1);
-		/* if (open_fd(redir, target, &fd))
-			return (perror(target), free(target), 1);
-		if (fd < 0)
-			return (perror(target), free(target), 1);
-		if (dup2_fd(redir, fd, target))
-			return (free(target), 1); */
 		free(target);
 		redir = redir->next;
 	}

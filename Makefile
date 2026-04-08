@@ -16,6 +16,8 @@ SRCS =	minishell.c minishell_init.c minishell_exec_command.c \
 		executor/execute_utils.c executor/execute_builtin.c \
 		executor/execute_command_execve.c \
 		executor/execute_heredoc.c \
+		executor/execute_heredoc_preprocess.c \
+		executor/execute_heredoc_utils.c \
 		builtin/builtin_echo.c builtin/builtin_env.c builtin/builtin_pwd.c \
 		builtin/builtin_export.c builtin/builtin_unset.c builtin/builtin_cd.c \
 		builtin/builtin_exit_utils.c builtin/builtin_exit.c \
