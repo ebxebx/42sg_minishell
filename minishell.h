@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/02 12:35:04 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/08 18:51:38 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/08 19:26:09 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@
 # include <signal.h>
 # include <sys/wait.h>
 # include "parsing/ast.h"
-# include "parsing/minishell_tokenize.h"
+# include "parsing/tokenize.h"
 
 typedef struct s_shell
 {

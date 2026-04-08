@@ -6,12 +6,12 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/03 15:52:36 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/08 18:09:31 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/08 19:24:40 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../libft/libft.h"
-#include "minishell_tokenize.h"
+#include "tokenize.h"
 
 t_token	*create_token(const char *value, size_t len, t_token_type type)
 {
@@ -53,7 +53,7 @@ size_t	token_len(const char *input, size_t start)
 		len++;
 	}
 	if (single_quote || double_quote)
-		return ((size_t)-1);
+		return ((size_t)(-1));
 	return (len);
 }
 
@@ -78,9 +78,8 @@ static t_token	*read_next_token(const char *input, int *i, t_token *head)
 
 	type = get_operator_type_and_length(input, *i, &op_len);
 	if (input[*i] == '(' || input[*i] == ')')
-		return ((*i)++, create_token(input + *i - 1, 1,
-				(input[*i - 1] == '(') * TOK_BRAC_OPEN
-				+ (input[*i - 1] == ')') * TOK_BRAC_CLOSE));
+		return ((*i)++, create_token(input + *i - 1, 1, (input[*i - 1] == '(')
+				* TOK_BRAC_OPEN + (input[*i - 1] == ')') * TOK_BRAC_CLOSE));
 	if (type != -1)
 		return (*i += op_len, create_token(input + *i - op_len, op_len, type));
 	len = token_len(input, *i);

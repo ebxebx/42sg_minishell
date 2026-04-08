@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:34:21 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/08 15:28:40 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/08 19:27:27 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@
 # include "../builtin/builtin.h"
 # include "../minishell.h"
 # include "../parsing/ast.h"
-# include "../parsing/minishell_tokenize.h"
+# include "../parsing/tokenize.h"
 # include <fcntl.h>
 # include <sys/stat.h>
 # include <sys/types.h>

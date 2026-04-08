@@ -6,13 +6,13 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 00:00:00 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/08 11:37:17 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/08 19:24:40 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include "../builtin/builtin.h"
-#include "../parsing/minishell_tokenize.h"
+#include "../parsing/tokenize.h"
 
 static int	execute_parent_builtin_node(t_shell *shell, t_ast *ast, char **argv)
 {

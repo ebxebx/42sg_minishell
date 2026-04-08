@@ -11,7 +11,8 @@ LIBFT_MAKE = $(MAKE) -C $(LIBFT_DIR) PRINTF_FLOAT=$(PRINTF_FLOAT)
 SRCS =	minishell.c minishell_init.c minishell_exec_command.c \
 		env/env_modify_entry.c env/env_modify_env+export.c env/env_utils.c \
 		parsing/tokenize.c parsing/tokenize_utils.c parsing/tokenize_utils2.c \
-		parsing/ast.c \
+		parsing/ast.c parsing/ast_parsing.c parsing/ast_utils.c \
+		parsing/ast_validate.c parsing/ast_print.c parsing/ast_redirs.c \
 		executor/execute_ast.c executor/execute_command_node.c \
 		executor/execute_pipeline.c executor/redirection.c \
 		executor/execute_utils.c executor/execute_builtin.c \

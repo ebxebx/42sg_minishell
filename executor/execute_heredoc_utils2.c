@@ -6,13 +6,13 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 15:26:29 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/08 15:28:23 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/08 19:24:40 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include "../builtin/builtin.h"
-#include "../parsing/minishell_tokenize.h"
+#include "../parsing/tokenize.h"
 
 /* Match shell SIGINT status so the parent can restore prompt state. */
 static int	get_heredoc_lines(char *limiter, char ***out_lines, int *line_count)

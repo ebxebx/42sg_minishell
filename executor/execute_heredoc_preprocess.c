@@ -6,12 +6,12 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 13:37:39 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/08 14:47:26 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/08 19:24:40 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../builtin/builtin.h"
-#include "../parsing/minishell_tokenize.h"
+#include "../parsing/tokenize.h"
 #include "executor.h"
 
 static void	cleanup_redirs(t_ast *ast, t_redir *redir)

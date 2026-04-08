@@ -6,13 +6,13 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 12:50:04 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/08 17:11:31 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/08 19:24:40 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "executor.h"
 #include "../builtin/builtin.h"
-#include "../parsing/minishell_tokenize.h"
+#include "../parsing/tokenize.h"
 
 char	*make_heredoc_tmp_path(void)
 {

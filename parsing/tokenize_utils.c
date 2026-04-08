@@ -6,12 +6,12 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 16:05:50 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/08 18:17:40 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/08 19:24:40 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../libft/libft.h"
-#include "minishell_tokenize.h"
+#include "tokenize.h"
 
 /*
 	In Bash, the operator >| is a specialized redirection tool used to

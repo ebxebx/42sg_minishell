@@ -6,12 +6,12 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 17:28:01 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/08 18:17:23 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/08 19:24:40 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../libft/libft.h"
-#include "minishell_tokenize.h"
+#include "tokenize.h"
 
 int	get_operator_type_and_length(const char *input, size_t start,
 		size_t *op_len)

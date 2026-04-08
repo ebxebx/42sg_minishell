@@ -6,12 +6,12 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 11:26:08 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/08 15:34:46 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/08 19:24:40 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../builtin/builtin.h"
-#include "../parsing/minishell_tokenize.h"
+#include "../parsing/tokenize.h"
 #include "executor.h"
 
 static void	exit_heredoc_child(t_shell *shell, int status)

@@ -6,12 +6,12 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 16:09:09 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/08 17:30:59 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/08 19:24:49 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_TOKENIZE_H
-# define MINISHELL_TOKENIZE_H
+#ifndef TOKENIZE_H
+# define TOKENIZE_H
 
 # include <ctype.h>
 # include <stdio.h>
@@ -46,8 +46,8 @@ t_token				*create_token(const char *value, size_t len,
 void				free_token_list(t_token *head);
 void				print_token_list(t_token *head);
 t_token				*parse_token(const char *input);
-int					get_operator_type_and_length(const char *input, size_t start,
-						size_t *op_len);
+int					get_operator_type_and_length(const char *input,
+						size_t start, size_t *op_len);
 
 // utility functions
 int					is_operator(char *token);
