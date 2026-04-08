@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/11/19 11:01:10 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/08 16:20:06 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/08 17:11:03 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,7 +35,7 @@ char				*ft_strnstr(const char *str, const char *to_find,
 char				*ft_strchr(const char *s, int c);
 char				*ft_strrchr(const char *s, int c);
 char				*ft_strdup(const char *src);
-char				*ft_strndup(const char *src, size_t n );
+char				*ft_strndup(const char *src, size_t n);
 
 int					ft_tolower(int c);
 int					ft_toupper(int c);
@@ -52,6 +52,7 @@ int					ft_memcmp(const void *s1, const void *s2, size_t n);
 void				*ft_memcpy(void *dest, const void *src, size_t n);
 void				*ft_memmove(void *dest, const void *src, size_t n);
 void				*ft_calloc(size_t nmemb, size_t size);
+void				*ft_realloc(void *ptr, size_t old_size, size_t new_size);
 
 char				*ft_strjoin(const char *s1, const char *s2);
 char				**ft_split(const char *s, char c);
