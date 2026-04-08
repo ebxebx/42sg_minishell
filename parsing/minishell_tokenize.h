@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/04 16:09:09 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/03 15:09:25 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/08 17:30:59 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,10 +41,22 @@ typedef struct s_token
 	struct s_token	*next;
 }					t_token;
 
-t_token		*create_token(const char *value, size_t len, t_token_type type);
-void		free_token(t_token *token);
-void		free_token_list(t_token *head);
-void		print_token_list(t_token *head);
-t_token		*parse_token(const char *input);
+t_token				*create_token(const char *value, size_t len,
+						t_token_type type);
+void				free_token_list(t_token *head);
+void				print_token_list(t_token *head);
+t_token				*parse_token(const char *input);
+int					get_operator_type_and_length(const char *input, size_t start,
+						size_t *op_len);
+
+// utility functions
+int					is_operator(char *token);
+int					is_redirection_type(t_token_type type);
+int					is_unsupported_type(t_token_type type);
+int					is_command_start(t_token_type type);
+int					is_digits_only(char *str);
+int					has_quotes(const char *value);
+void				print_token_list(t_token *tokens);
+void				free_token_list(t_token *head);
 
 #endif

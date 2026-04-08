@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/26 17:53:44 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/04 16:45:37 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/08 16:08:00 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -149,50 +149,6 @@ static char	**append_split_argv_words(char **argv, const char *word)
 		start += len;
 	}
 	return (argv);
-}
-
-// Function to check if a token is an operator
-int	is_operator(char *token)
-{
-	if (!token)
-		return (0);
-	return (ft_strcmp(token, "|") == 0 || ft_strcmp(token, ">") == 0
-		|| ft_strcmp(token, "<") == 0 || ft_strcmp(token, ">>") == 0
-		|| ft_strcmp(token, "<<") == 0 || ft_strcmp(token, "||") == 0
-		|| ft_strcmp(token, "&&") == 0);
-}
-
-static int	is_redirection_type(t_token_type type)
-{
-	return (type == TOK_RDIR_IN || type == TOK_RDIR_OUT
-		|| type == TOK_RDIR_HEREDOC || type == TOK_RDIR_APPEND);
-}
-
-static int	is_unsupported_type(t_token_type type)
-{
-	return (type == TOK_AND || type == TOK_OR
-		|| type == TOK_BRAC_OPEN || type == TOK_BRAC_CLOSE);
-}
-
-static int	is_command_start(t_token_type type)
-{
-	return (type == TOK_WORD || is_redirection_type(type));
-}
-
-static int	is_digits_only(char *str)
-{
-	int	i;
-
-	if (!str || !str[0])
-		return (0);
-	i = 0;
-	while (str[i])
-	{
-		if (!ft_isdigit(str[i]))
-			return (0);
-		i++;
-	}
-	return (1);
 }
 
 static int	print_syntax_error(char *token)
