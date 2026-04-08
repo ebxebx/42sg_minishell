@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:29:06 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/08 19:42:12 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/08 20:19:29 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,13 @@ typedef struct s_ast
 	t_redir			*redirs;
 }					t_ast;
 
+typedef struct s_cmd_parser
+{
+	t_token			*cur;
+	t_ast			*ast;
+}					t_cmd_parser;
+
+t_ast				*parse_pipeline(t_token *tokens);
 t_ast				*parse_tokens_to_ast(t_token *tokens);
 void				free_ast(t_ast *node);
 void				print_ast(t_ast *node, int depth);

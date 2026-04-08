@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 19:09:24 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/08 20:04:55 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/08 20:18:58 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,65 +17,77 @@
 #include <string.h>
 #include <unistd.h>
 
-/*
-1️⃣ Lowest level: command
-Handles:
-- words → argv (concatenate into single node->value)
-- redirections (attach file nodes to left for input and right for output)
-This function consumes tokens by advancing *tokens to the next unconsumed token.
-*/
-/*
-** Ignore fd designators like `2>` as argv words until full fd-aware
-** redirection support is added.
-*/
+static int	handle_redirection(t_cmd_parser *cmd)
+{
+	if (!cmd->cur->next || cmd->cur->next->type != TOK_WORD)
+		return (1);
+	if (append_redir(cmd->ast, cmd->cur->type, cmd->cur->next->value,
+			cmd->cur->next->preserve_empty))
+		return (1);
+	cmd->cur = cmd->cur->next->next;
+	return (0);
+}
+
+static int	consume_cmd_token(t_cmd_parser *cmd)
+{
+	if (cmd->cur->type == TOK_WORD && is_digits_only(cmd->cur->value)
+		&& cmd->cur->next && is_redirection_type(cmd->cur->next->type))
+	{
+		cmd->cur = cmd->cur->next;
+		return (0);
+	}
+	if (!cmd->cur->value[0] && !cmd->cur->preserve_empty)
+	{
+		cmd->cur = cmd->cur->next;
+		return (0);
+	}
+	if (!cmd->cur->preserve_empty)
+		cmd->ast->argv = append_split_argv_words(cmd->ast->argv,
+				cmd->cur->value);
+	else
+		cmd->ast->argv = append_argv_word(cmd->ast->argv, cmd->cur->value);
+	if (!cmd->ast->argv)
+		return (1);
+	cmd->cur = cmd->cur->next;
+	return (0);
+}
+
+static int	finalize_cmd_node(t_cmd_parser *cmd)
+{
+	if (!cmd->ast->argv || !cmd->ast->argv[0])
+		return (0);
+	free(cmd->ast->value);
+	cmd->ast->value = ft_strdup(cmd->ast->argv[0]);
+	if (!cmd->ast->value)
+		return (1);
+	return (0);
+}
+
 t_ast	*parse_cmd(t_token **tokens)
 {
-	t_token	*p;
-	t_ast	*ast;
+	t_cmd_parser	cmd;
 
 	if (!tokens || !*tokens)
 		return (NULL);
-	p = *tokens;
-	ast = create_node("");
-	if (!ast)
+	cmd.cur = *tokens;
+	cmd.ast = create_node("");
+	if (!cmd.ast)
 		return (NULL);
-	while (p && ft_strcmp(p->value, "|") != 0)
+	while (cmd.cur && ft_strcmp(cmd.cur->value, "|") != 0)
 	{
-		if (is_redirection_type(p->type))
+		if (is_redirection_type(cmd.cur->type))
 		{
-			if (!p->next || p->next->type != TOK_WORD || append_redir(ast,
-					p->type, p->next->value, p->next->preserve_empty))
-				return (free_ast(ast),NULL);
-			p = p->next->next;
+			if (handle_redirection(&cmd))
+				return (free_ast(cmd.ast), NULL);
 			continue ;
 		}
-		if (p->type == TOK_WORD && is_digits_only(p->value) && p->next
-			&& is_redirection_type(p->next->type))
-		{
-			p = p->next;
-			continue ;
-		}
-		if (!p->value[0] && !p->preserve_empty)
-		{
-			p = p->next;
-			continue ;
-		}
-		if (!p->preserve_empty)
-			ast->argv = append_split_argv_words(ast->argv, p->value);
-		else
-			ast->argv = append_argv_word(ast->argv, p->value);
-		if (!ast->argv)
-			return (free_ast(ast),NULL);
-		p = p->next;
+		if (consume_cmd_token(&cmd))
+			return (free_ast(cmd.ast), NULL);
 	}
-	if (ast->argv && ast->argv[0])
-	{
-		free(ast->value);
-		ast->value = ft_strdup(ast->argv[0]);
-		if (!ast->value)
-			return (free_ast(ast), NULL);
-	}
-	return (*tokens = p, ast);
+	if (finalize_cmd_node(&cmd))
+		return (free_ast(cmd.ast), NULL);
+	*tokens = cmd.cur;
+	return (cmd.ast);
 }
 
 t_ast	*parse_pipeline(t_token *tokens)
@@ -103,16 +115,4 @@ t_ast	*parse_pipeline(t_token *tokens)
 		left = node;
 	}
 	return (left);
-}
-
-/* Recursive Function to Parse Tokens into AST */
-// TODO: add logical-operator and parenthesis parsing with proper precedence.
-// For now,	build pipelines (left-associative). Extend precedence handling.
-t_ast	*parse_tokens_to_ast(t_token *tokens)
-{
-	if (!tokens)
-		return (NULL);
-	if (!validate_tokens(tokens))
-		return (NULL);
-	return (parse_pipeline(tokens));
 }

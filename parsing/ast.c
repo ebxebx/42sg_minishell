@@ -90,6 +90,15 @@ char	**append_split_argv_words(char **argv, const char *word)
 	return (argv);
 }
 
+t_ast	*parse_tokens_to_ast(t_token *tokens)
+{
+	if (!tokens)
+		return (NULL);
+	if (!validate_tokens(tokens))
+		return (NULL);
+	return (parse_pipeline(tokens));
+}
+
 /* Main function for testing */
 /*
 int	main(void)
