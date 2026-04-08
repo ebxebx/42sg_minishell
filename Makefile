@@ -26,6 +26,7 @@ SRCS =	minishell.c minishell_init.c minishell_exec_command.c \
 		expander/expand_heredoc.c expander/expand.c \
 		minishell_signal.c minishell_signal_handler.c \
 		minishell_prompt.c \
+		minishell_read_input.c \
 		minishell_debug.c
 OBJS = $(SRCS:.c=.o)
 
