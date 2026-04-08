@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 12:50:04 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/08 14:35:42 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/08 17:11:31 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,11 +54,14 @@ void	free_lines(char **lines, int count)
 static int	extend_lines(char ***lines, int count, int *cap)
 {
 	char	**new_lines;
+	int		old_cap;
 
 	if (count >= *cap)
 	{
+		old_cap = *cap;
 		*cap *= 2;
-		new_lines = realloc(*lines, sizeof(char *) * (*cap));
+		new_lines = ft_realloc(*lines, sizeof(char *) * old_cap,
+				sizeof(char *) * (*cap));
 		if (!new_lines)
 			return (1);
 		*lines = new_lines;
