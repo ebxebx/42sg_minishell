@@ -16,29 +16,27 @@
 
 char	*make_heredoc_tmp_path(void)
 {
-	char			*pid_str;
 	char			*seq_str;
-	char			*base;
 	char			*path;
+	int				fd;
 	static size_t	seq;
 
-	pid_str = ft_itoa(getpid());
-	seq_str = ft_itoa((int)seq++);
-	if (!pid_str || !seq_str)
-		return (free(pid_str), free(seq_str), NULL);
-	base = ft_strjoin(HERE_DOC_TMP "_", pid_str);
-	free(pid_str);
-	if (!base)
-		return (free(seq_str), NULL);
-	path = ft_strjoin(base, "_");
-	free(base);
-	if (!path)
-		return (free(seq_str), NULL);
-	base = path;
-	path = ft_strjoin(base, seq_str);
-	free(base);
-	free(seq_str);
-	return (path);
+	while (1)
+	{
+		seq_str = ft_itoa((int)seq++);
+		if (!seq_str)
+			return (NULL);
+		path = ft_strjoin(HERE_DOC_TMP "_", seq_str);
+		free(seq_str);
+		if (!path)
+			return (NULL);
+		fd = open(path, O_WRONLY | O_CREAT | O_EXCL, 0644);
+		if (fd >= 0)
+			return (close(fd), path);
+		free(path);
+		if (errno != EEXIST)
+			return (NULL);
+	}
 }
 
 void	free_lines(char **lines, int count)
