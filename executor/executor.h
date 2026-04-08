@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 16:34:21 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/08 13:45:18 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/08 15:28:40 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ char	*make_heredoc_tmp_path(void);
 char	**collect_heredoc_lines(char *limiter, int *out_count);
 void	free_lines(char **lines, int count);
 void	cleanup_heredoc_tmps(t_ast *ast);
+int		read_heredoc_to_path(t_shell *shell, char *limiter, char *path,
+			int should_expand);
 
 // execve related
 int		exec_with_path(char **argv, char **env);
