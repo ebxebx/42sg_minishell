@@ -14,6 +14,8 @@ SRCS =	minishell.c minishell_init.c minishell_exec_command.c \
 		executor/execute_ast.c executor/execute_command_node.c \
 		executor/execute_pipeline.c executor/redirection.c \
 		executor/execute_utils.c executor/execute_builtin.c \
+		executor/execute_command_execve.c \
+		executor/execute_heredoc.c \
 		builtin/builtin_echo.c builtin/builtin_env.c builtin/builtin_pwd.c \
 		builtin/builtin_export.c builtin/builtin_unset.c builtin/builtin_cd.c \
 		builtin/builtin_exit_utils.c builtin/builtin_exit.c \
@@ -51,6 +53,12 @@ test1: $(NAME)
 
 testv: $(NAME)
 	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --track-fds=yes --trace-children=yes --suppressions=minishell_readline_merged.supp $(TEST_CMD)
+
+tester: $(NAME)
+	cd minishell_tester/ && ./tester
+
+testerv: $(NAME)
+	cd minishell_tester/ && ./tester valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes
 
 $(NAME): $(OBJS) $(LIBFT)
 	$(CC) $(CFLAGS) $(DEPFLAGS) $(OBJS) $(LIB_FLAGS) -o $(NAME)
