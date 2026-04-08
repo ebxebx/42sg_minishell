@@ -3,21 +3,15 @@
 /*                                                        :::      ::::::::   */
 /*   ft_atol.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zchoo <zchoo@student.42.fr>                +#+  +:+       +#+        */
+/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/30 18:24:25 by zchoo             #+#    #+#             */
-/*   Updated: 2026/01/04 18:55:10 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/08 16:34:10 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 #include <limits.h>
-
-static int	ft_isspace(char c)
-{
-	return (c == ' ' || c == '\f' || c == '\n' || c == '\r' || c == '\t'
-		|| c == '\v');
-}
 
 static long	ft_extract_and_convert(char *str)
 {
