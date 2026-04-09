@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:37 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/04/07 18:55:20 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/09 15:03:17 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,10 @@ static int	check_argv_count(t_shell *shell, char **argv)
 	return (0);
 }
 
-static int	check_dash_argv(t_shell *shell, char **argv, t_path_info *path_info)
+static int	resolve_cd_target(t_shell *shell, char **argv,
+	t_path_info *path_info)
 {
-	if (!argv[1] || !ft_strcmp(argv[1], "--"))
+	if (!argv[1] || !ft_strcmp(argv[1], "--") || !ft_strcmp(argv[1], "~"))
 	{
 		path_info->path = get_env_value(shell->env, "HOME");
 		if (!(path_info->path))
@@ -81,6 +82,7 @@ static int	check_dash_argv(t_shell *shell, char **argv, t_path_info *path_info)
 	return (0);
 }
 
+/* `cd ~` uses HOME. */
 /* `cd --` uses HOME; `--` only stops option parsing here. */
 /* `cd -` switches to OLDPWD and prints the destination path. */
 int	builtin_cd(t_shell *shell, char **argv)
@@ -92,7 +94,7 @@ int	builtin_cd(t_shell *shell, char **argv)
 	path_info.print_path = 0;
 	if (check_argv_count(shell, argv))
 		return (1);
-	if (check_dash_argv(shell, argv, &path_info))
+	if (resolve_cd_target(shell, argv, &path_info))
 		return (1);
 	if (!path_info.path)
 		path_info.path = argv[1];
