@@ -52,26 +52,35 @@ static char	*prompt(t_shell *shell)
 	return (cmd);
 }
 
+static int	run_shell_loop(t_shell *shell, int interactive)
+{
+	char	*cmd;
+
+	while (1)
+	{
+		cmd = prompt(shell);
+		if (!cmd)
+			break ;
+		handle_signal_status(shell);
+		if (interactive && cmd[0] != '\0')
+			add_history(cmd);
+		exec_command(shell, cmd);
+		free(cmd);
+		if ((!interactive && shell->status == 2) || shell->should_exit)
+			break ;
+	}
+	return (0);
+}
+
 int	main(int argc, char **argv, char **env)
 {
 	t_shell	shell;
-	char	*cmd;
+	int		interactive;
 
 	init_shell(&shell, env);
 	init_debug_mode(&shell, argc, argv);
-	while (1)
-	{
-		cmd = prompt(&shell);
-		if (!cmd)
-			break ;
-		handle_signal_status(&shell);
-		if (isatty(STDIN_FILENO) && cmd[0] != '\0')
-			add_history(cmd);
-		exec_command(&shell, cmd);
-		free(cmd);
-		if (shell.should_exit)
-			break ;
-	}
+	interactive = isatty(STDIN_FILENO);
+	run_shell_loop(&shell, interactive);
 	rl_clear_history();
 	free_shell(&shell);
 	close_all_fds();

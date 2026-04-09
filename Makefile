@@ -71,6 +71,10 @@ testerv: $(NAME)
 $(NAME): $(OBJS) $(LIBFT)
 	$(CC) $(CFLAGS) $(DEPFLAGS) $(OBJS) $(LIB_FLAGS) -o $(NAME)
 
+$(LIBFT):
+	$(LIBFT_MAKE)
+
+# Ensure make will run libft's build to check if its source files were modified
 libft:
 	$(LIBFT_MAKE)
 
