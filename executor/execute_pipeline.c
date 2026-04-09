@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_pipeline.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
+/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 00:00:00 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/07 18:53:09 by ka-tan           ###   ########.fr       */
+/*   Updated: 2026/04/09 14:46:06 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,6 +89,7 @@ int	execute_pipeline(t_shell *shell, t_ast *ast)
 	if (WIFEXITED(status[RIGHT]))
 		return (WEXITSTATUS(status[RIGHT]));
 	if (WIFSIGNALED(status[RIGHT]))
-		return (128 + WTERMSIG(status[RIGHT]));
+		return (report_child_signal_status(status[RIGHT]),
+			128 + WTERMSIG(status[RIGHT]));
 	return (1);
 }

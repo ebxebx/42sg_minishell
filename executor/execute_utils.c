@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/04 15:29:01 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/07 21:21:11 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/09 14:44:25 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,17 @@ char	*strip_quotes(const char *value)
 			out[j++] = value[i];
 	}
 	return (out[j] = '\0', out);
+}
+
+void	report_child_signal_status(int status)
+{
+	int	signo;
+
+	if (!WIFSIGNALED(status))
+		return ;
+	signo = WTERMSIG(status);
+	if (signo == SIGQUIT)
+		ft_putendl_fd("Quit (core dumped)", STDERR_FILENO);
 }
 
 /* char	**build_argv(t_shell *shell, char *cmdline)

@@ -63,6 +63,7 @@ char	**get_paths_from_env(char **env);
 char	*get_full_path(char *cmd, char *path);
 void	close_all_fds(void);
 char	*strip_quotes(const char *value);
+void	report_child_signal_status(int status);
 // char	**build_argv(t_shell *shell, char *cmdline);
 
 #endif
