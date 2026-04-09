@@ -32,7 +32,8 @@ SRCS =	minishell.c minishell_init.c minishell_exec_command.c \
 OBJS = $(SRCS:.c=.o)
 
 CC = cc
-CFLAGS = -Wall -Wextra -Werror -g 
+CFLAGS = -Wall -Wextra -Werror -g
+# CFLAGS = -Wall -Wextra -Werror -g -gdwarf-4 
 LIB_FLAGS = -L$(LIBFT_DIR) -lft -lreadline
 ifeq ($(PRINTF_FLOAT),1)
 	LIB_FLAGS += -lm
@@ -57,7 +58,7 @@ test1: $(NAME)
 	$(TEST1_CMD)
 
 testv: $(NAME)
-	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --track-fds=yes --trace-children=yes --suppressions=minishell_readline_merged.supp $(TEST_CMD)
+	valgrind --leak-check=full --show-leak-kinds=all --track-origins=yes --track-fds=yes --trace-children=yes --trace-children-skip=ls,cat,grep,sh,bash	--suppressions=minishell_readline_merged.supp $(TEST_CMD)
 
 tester: $(NAME)
 	cd minishell_tester/ && ./tester
