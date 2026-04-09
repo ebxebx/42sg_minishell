@@ -31,7 +31,8 @@ static int	handle_redirection(t_cmd_parser *cmd)
 static int	consume_cmd_token(t_cmd_parser *cmd)
 {
 	if (cmd->cur->type == TOK_WORD && is_digits_only(cmd->cur->value)
-		&& cmd->cur->next && is_redirection_type(cmd->cur->next->type))
+		&& cmd->cur->glued_right && cmd->cur->next
+		&& is_redirection_type(cmd->cur->next->type))
 	{
 		cmd->cur = cmd->cur->next;
 		return (0);

@@ -28,6 +28,7 @@ t_token	*create_token(const char *value, size_t len, t_token_type type)
 	}
 	new_token->type = type;
 	new_token->preserve_empty = 0;
+	new_token->glued_right = 0;
 	new_token->next = NULL;
 	return (new_token);
 }
@@ -113,6 +114,8 @@ t_token	*parse_token(const char *input)
 			continue ;
 		}
 		token = read_next_token(input, &i, head);
+		if (token && input[i] && !ft_isspace(input[i]))
+			token->glued_right = 1;
 		if (!append_token(&head, &tail, token))
 			return (NULL);
 	}
