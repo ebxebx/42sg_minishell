@@ -48,7 +48,7 @@ else
 	CFLAGS += -DDEBUG=0
 endif
 
-all: $(NAME)
+all: $(NAME) $(LIBFT)
 
 test: $(NAME)
 	$(TEST_CMD)
