@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:37 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/04/09 15:03:17 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/09 16:56:22 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,28 @@ static int	resolve_cd_target(t_shell *shell, char **argv,
 	return (0);
 }
 
+static int	expand_home_prefix(t_shell *shell, char **argv,
+	t_path_info *path_info)
+{
+	char	*home;
+
+	if (!argv[1] || argv[1][0] != '~'
+		|| (argv[1][1] != '\0' && argv[1][1] != '/'))
+		return (0);
+	home = get_env_value(shell->env, "HOME");
+	if (!home)
+	{
+		ft_putstr_fd("minishell: cd", 2);
+		ft_putendl_fd(": HOME not set", 2);
+		return (1);
+	}
+	path_info->path_copy = ft_strjoin(home, argv[1] + 1);
+	if (!path_info->path_copy)
+		return (1);
+	path_info->path = path_info->path_copy;
+	return (0);
+}
+
 /* `cd ~` uses HOME. */
 /* `cd --` uses HOME; `--` only stops option parsing here. */
 /* `cd -` switches to OLDPWD and prints the destination path. */
@@ -96,6 +118,8 @@ int	builtin_cd(t_shell *shell, char **argv)
 		return (1);
 	if (resolve_cd_target(shell, argv, &path_info))
 		return (1);
+	if (!path_info.path && expand_home_prefix(shell, argv, &path_info))
+		return (free(path_info.path_copy), 1);
 	if (!path_info.path)
 		path_info.path = argv[1];
 	if ((chdir(path_info.path)) == -1)
