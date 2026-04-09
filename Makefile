@@ -49,7 +49,7 @@ else
 	CFLAGS += -DDEBUG=0
 endif
 
-all: $(NAME) $(LIBFT)
+all: libft $(NAME)
 
 test: $(NAME)
 	$(TEST_CMD)
@@ -69,7 +69,7 @@ testerv: $(NAME)
 $(NAME): $(OBJS) $(LIBFT)
 	$(CC) $(CFLAGS) $(DEPFLAGS) $(OBJS) $(LIB_FLAGS) -o $(NAME)
 
-$(LIBFT):
+libft:
 	$(LIBFT_MAKE)
 
 # The Pattern Rule. 
@@ -89,4 +89,4 @@ fclean: clean
 
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re libft
