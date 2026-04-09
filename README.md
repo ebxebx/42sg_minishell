@@ -358,9 +358,11 @@ diff -u bash_env.txt my_env.txt
 ## 📚 Resources
 
 References used to understand the project topic:
-- **Bash Reference Manual**
-- **CS50x 2026 - Lecture 5 - Data Structures**
-https://www.youtube.com/watch?v=PmAI76OGE_E
+- **Bash Reference Manual** https://www.gnu.org/s/bash/manual/bash.html
+- **CS50x 2026 - Lecture 5 - Data Structures** https://www.youtube.com/watch?v=PmAI76OGE_E
+- **Minishell Tester** https://github.com/LucasKuhn/minishell_tester
+- https://m4nnb3ll.medium.com/minishell-building-a-mini-bash-a-42-project-b55a10598218
+- https://www.mintlify.com/ibon-ira/Minishell
 
 AI was used for:
 - clarifying concepts such as `fork`, `execve`, `dup2`, pipes, signals, parsing and exit status
