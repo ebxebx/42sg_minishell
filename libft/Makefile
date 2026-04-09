@@ -44,10 +44,10 @@ $(OBJS): %.o : %.c
 -include $(DEPS)
 
 clean:
-	rm -f *.o
+	rm -f $(OBJS) $(DEPS)
 
-fclean: clean
-	rm -f $(NAME) test
+fclean:
+	rm -f $(NAME) $(OBJS) $(DEPS)
 
 re: fclean all
 
