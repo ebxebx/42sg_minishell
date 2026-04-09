@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute_builtin.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 00:00:00 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/08 12:47:58 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/09 13:04:42 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,8 @@ int	run_builtin(t_shell *shell, char **argv)
 		return (builtin_unset(shell, argv));
 	if (!ft_strcmp(argv[0], "exit"))
 		return (builtin_exit(shell, argv));
-	if (!ft_strcmp(argv[0], "pwd"))
-		return (builtin_pwd(shell));
+	if (!ft_strcmp(argv[0], "cd"))
+		return (builtin_cd(shell, argv));
 	return (1);
 }
 

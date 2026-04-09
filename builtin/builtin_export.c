@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtin_export.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
+/*   By: ka-tan <ka-tan@student.42singapore.sg>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/23 16:06:37 by ka-tan            #+#    #+#             */
-/*   Updated: 2026/04/07 16:22:18 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/09 13:02:49 by ka-tan           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,15 +66,21 @@ void	print_export_entry(char *entry)
 
 int	print_export(char **export)
 {
-	int	i;
+	int		i;
+	char	**exportcopy;
 
 	i = 0;
-	while (export && export[i])
+	exportcopy = dup_env(export);
+	if (!exportcopy)
+		return (1);
+	sort_export(exportcopy);
+	while (exportcopy[i])
 	{
-		if (!is_underscore_var(export[i]))
-			print_export_entry(export[i]);
+		if (!is_underscore_var(exportcopy[i]))
+			print_export_entry(exportcopy[i]);
 		i++;
 	}
+	ft_strarr_free(exportcopy);
 	return (0);
 }
 
