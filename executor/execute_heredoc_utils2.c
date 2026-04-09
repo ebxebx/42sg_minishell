@@ -6,13 +6,13 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/08 15:26:29 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/08 19:24:40 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/09 15:48:48 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "executor.h"
 #include "../builtin/builtin.h"
 #include "../parsing/tokenize.h"
+#include "executor.h"
 
 /* Match shell SIGINT status so the parent can restore prompt state. */
 static int	get_heredoc_lines(char *limiter, char ***out_lines, int *line_count)
@@ -58,9 +58,11 @@ int	read_heredoc_to_path(t_shell *shell, char *limiter, char *path,
 	char	**lines;
 	int		count;
 	int		i;
+	int		status;
 
-	if (get_heredoc_lines(limiter, &lines, &count) != 0)
-		return (1);
+	status = get_heredoc_lines(limiter, &lines, &count);
+	if (status != 0)
+		return (status);
 	fd = open(path, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 	if (fd < 0)
 		return (perror(path), free_lines(lines, count), 1);
