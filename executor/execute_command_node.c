@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/03/30 00:00:00 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/09 14:48:03 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/13 13:19:40 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,7 @@ int	execute_command_node(t_shell *shell, t_ast *cmd)
 		return (perror("fork"), 1);
 	if (pid == 0)
 		execute_command_child(shell, cmd);
+	g_signal = 0;
 	init_signal_exec();
 	while (waitpid(pid, &status, 0) < 0)
 	{
@@ -92,9 +93,18 @@ int	execute_command_node(t_shell *shell, t_ast *cmd)
 	}
 	init_signal_prompt();
 	if (WIFEXITED(status))
+	{
+		g_signal = 0;
 		return (WEXITSTATUS(status));
+	}
 	if (WIFSIGNALED(status))
+	{
+		if (WTERMSIG(status) == SIGINT)
+			write(STDOUT_FILENO, "\n", 1);
+		g_signal = 0;
 		return (report_child_signal_status(status),
 			128 + WTERMSIG(status));
+	}
+	g_signal = 0;
 	return (1);
 }

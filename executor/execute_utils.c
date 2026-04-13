@@ -6,7 +6,7 @@
 /*   By: zchoo <zchoo@student.42singapore.sg>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2026/04/04 15:29:01 by zchoo             #+#    #+#             */
-/*   Updated: 2026/04/09 14:44:25 by zchoo            ###   ########.fr       */
+/*   Updated: 2026/04/09 22:02:27 by zchoo            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ char	**get_paths_from_env(char **env)
 	char	*path_env;
 
 	path_env = get_env_value(env, "PATH");
-	if (path_env && !*path_env)
+	if (!path_env || !*path_env)
 	{
 		errno = ENOENT;
 		return (NULL);
